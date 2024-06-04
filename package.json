@@ -15,7 +15,6 @@
     "strapi": "strapi"
   },
   "dependencies": {
-    "20": "^3.1.9",
     "@strapi/plugin-graphql": "4.24.4",
     "@strapi/plugin-i18n": "4.24.4",
     "@strapi/plugin-users-permissions": "4.24.4",
@@ -33,8 +32,8 @@
     "styled-components": "^5.3.11"
   },
   "engines": {
-    "node": "20.x",
-    "npm": ">=6.0.0"
+    "node": ">=18.0.0 <=20.x.x",
+    "npm": ">=6.0.0 <=10.x"
   },
   "strapi": {
     "uuid": "7f935332-429d-4d42-9853-67ba6fa4cbfa",
