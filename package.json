@@ -1,14 +1,18 @@
 {
   "name": "backend",
-  "private": true,
   "version": "0.1.0",
+  "private": true,
   "description": "A Strapi application",
+  "license": "MIT",
+  "author": {
+    "name": "A Strapi developer"
+  },
   "scripts": {
-    "develop": "strapi develop",
-    "start": "strapi start",
     "build": "strapi build",
-    "strapi": "strapi",
-    "init:hard": "rm -rf ./node_modules && rm -rf ./package-lock.json && npm i"
+    "develop": "strapi develop",
+    "init:hard": "rm -rf ./node_modules && rm -rf ./package-lock.json && npm i",
+    "start": "strapi start",
+    "strapi": "strapi"
   },
   "dependencies": {
     "@strapi/plugin-graphql": "4.24.4",
@@ -27,16 +31,13 @@
     "react-router-dom": "^5.3.4",
     "styled-components": "^5.3.11"
   },
-  "author": {
-    "name": "A Strapi developer"
+  "engines": {
+    "node": ">=18.0.0 <=20.x.x",
+    "npm": ">=6.0.0"
   },
   "strapi": {
     "uuid": "7f935332-429d-4d42-9853-67ba6fa4cbfa",
     "template": "https://github.com/strapi/strapi-template-blog",
     "starter": "https://github.com/strapi/strapi-starter-next-blog"
-  },
-  "engines": {
-    "node": ">=18.0.0 <=20.x.x"
-  },
-  "license": "MIT"
+  }
 }
