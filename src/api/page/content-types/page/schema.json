@@ -1,0 +1,52 @@
+{
+  "kind": "collectionType",
+  "collectionName": "pages",
+  "info": {
+    "singularName": "page",
+    "pluralName": "pages",
+    "displayName": "Page",
+    "name": "page"
+  },
+  "options": {
+    "increments": true,
+    "timestamps": true,
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "slug": {
+      "type": "string"
+    },
+    "Seo": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.seo"
+    },
+    "block": {
+      "type": "dynamiczone",
+      "components": [
+        "sections.hero",
+        "sections.section",
+        "sections.form"
+      ]
+    },
+    "published": {
+      "type": "datetime"
+    },
+    "parent": {
+      "type": "enumeration",
+      "enum": [
+        "self",
+        "more",
+        "club",
+        "team"
+      ],
+      "default": "self",
+      "required": true
+    }
+  }
+}

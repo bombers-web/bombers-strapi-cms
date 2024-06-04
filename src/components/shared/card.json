@@ -1,0 +1,26 @@
+{
+  "collectionName": "components_shared_cards",
+  "info": {
+    "icon": "square",
+    "displayName": "card"
+  },
+  "options": {},
+  "attributes": {
+    "cardText": {
+      "type": "string"
+    },
+    "cardImage": {
+      "type": "media",
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos"
+      ],
+      "multiple": true,
+      "required": false
+    },
+    "display": {
+      "type": "boolean"
+    }
+  }
+}

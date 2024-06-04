@@ -1,0 +1,32 @@
+{
+  "collectionName": "components_main_sliders",
+  "info": {
+    "icon": "th-large",
+    "displayName": "Slider"
+  },
+  "options": {},
+  "attributes": {
+    "image": {
+      "type": "media",
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos"
+      ],
+      "multiple": false,
+      "required": false
+    },
+    "heading": {
+      "type": "string"
+    },
+    "subheading": {
+      "type": "string"
+    },
+    "link": {
+      "type": "string"
+    },
+    "display": {
+      "type": "boolean"
+    }
+  }
+}
