@@ -1,0 +1,80 @@
+{
+  "kind": "collectionType",
+  "collectionName": "players",
+  "info": {
+    "singularName": "player",
+    "pluralName": "players",
+    "displayName": "Player",
+    "name": "player"
+  },
+  "options": {
+    "increments": true,
+    "timestamps": true,
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "first_name": {
+      "type": "string"
+    },
+    "last_name": {
+      "type": "string"
+    },
+    "nickname": {
+      "type": "string"
+    },
+    "bio": {
+      "type": "text"
+    },
+    "nationality": {
+      "type": "string"
+    },
+    "hometown": {
+      "type": "string"
+    },
+    "height": {
+      "type": "string"
+    },
+    "weight": {
+      "type": "string"
+    },
+    "picture": {
+      "type": "media",
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos"
+      ],
+      "multiple": false,
+      "required": false
+    },
+    "date_of_birth": {
+      "type": "date"
+    },
+    "division": {
+      "type": "enumeration",
+      "enum": [
+        "D1",
+        "D3"
+      ]
+    },
+    "position": {
+      "type": "integer",
+      "default": 1,
+      "max": 15,
+      "min": 1
+    },
+    "hoverPic": {
+      "type": "media",
+      "allowedTypes": [
+        "images"
+      ],
+      "multiple": false,
+      "required": false
+    },
+    "slug": {
+      "type": "uid",
+      "targetField": "first_name"
+    }
+  }
+}

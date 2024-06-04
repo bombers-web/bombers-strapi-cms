@@ -1,0 +1,81 @@
+{
+  "kind": "collectionType",
+  "collectionName": "games",
+  "info": {
+    "singularName": "game",
+    "pluralName": "games",
+    "displayName": "Game",
+    "name": "game"
+  },
+  "options": {
+    "increments": true,
+    "timestamps": true,
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "date": {
+      "type": "datetime"
+    },
+    "home_score": {
+      "type": "string"
+    },
+    "preview": {
+      "type": "text"
+    },
+    "finished": {
+      "type": "boolean",
+      "default": false
+    },
+    "away_score": {
+      "type": "string"
+    },
+    "division": {
+      "type": "enumeration",
+      "enum": [
+        "d1",
+        "d3"
+      ]
+    },
+    "updates": {
+      "type": "richtext"
+    },
+    "home": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::team.team"
+    },
+    "away": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::team.team"
+    },
+    "slug": {
+      "type": "uid"
+    },
+    "winner": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::team.team"
+    },
+    "location": {
+      "type": "string"
+    },
+    "report": {
+      "type": "text"
+    },
+    "friendly": {
+      "type": "boolean"
+    },
+    "image": {
+      "type": "media",
+      "allowedTypes": [
+        "files",
+        "images",
+        "videos"
+      ],
+      "multiple": false,
+      "required": false
+    }
+  }
+}

@@ -1,0 +1,76 @@
+{
+  "collectionName": "components_decoration_heroes",
+  "info": {
+    "icon": "address-card",
+    "description": "",
+    "displayName": "Hero"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "subTitle": {
+      "type": "string"
+    },
+    "image": {
+      "type": "media",
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos"
+      ],
+      "multiple": false,
+      "required": false
+    },
+    "size": {
+      "type": "enumeration",
+      "enum": [
+        "sm",
+        "md",
+        "lg",
+        "xl",
+        "full"
+      ]
+    },
+    "startPic": {
+      "type": "media",
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos"
+      ],
+      "multiple": false,
+      "required": false
+    },
+    "background": {
+      "type": "media",
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos"
+      ],
+      "multiple": false,
+      "required": false
+    },
+    "direction": {
+      "type": "enumeration",
+      "enum": [
+        "row",
+        "column"
+      ]
+    },
+    "contentLink": {
+      "type": "string"
+    },
+    "backButton": {
+      "type": "boolean"
+    },
+    "links": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.link"
+    }
+  }
+}

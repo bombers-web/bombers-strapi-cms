@@ -1,0 +1,33 @@
+{
+  "kind": "collectionType",
+  "collectionName": "legends",
+  "info": {
+    "singularName": "legend",
+    "pluralName": "legends",
+    "displayName": "Legend",
+    "name": "legend"
+  },
+  "options": {
+    "increments": true,
+    "timestamps": true,
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "first_name": {
+      "type": "string"
+    },
+    "last_name": {
+      "type": "string"
+    },
+    "bio": {
+      "type": "text"
+    },
+    "position": {
+      "type": "string"
+    },
+    "years_played": {
+      "type": "string"
+    }
+  }
+}

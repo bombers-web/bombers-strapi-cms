@@ -1,0 +1,28 @@
+{
+  "collectionName": "components_shared_dynamic_contents",
+  "info": {
+    "icon": "align-justify",
+    "displayName": "dynamic content"
+  },
+  "options": {},
+  "attributes": {
+    "image": {
+      "type": "media",
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos"
+      ],
+      "multiple": false,
+      "required": false
+    },
+    "pageCopy": {
+      "type": "richtext"
+    },
+    "card": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.card"
+    }
+  }
+}

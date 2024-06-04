@@ -1,0 +1,20 @@
+{
+  "collectionName": "components_shared_images",
+  "info": {
+    "icon": "file-image",
+    "displayName": "image"
+  },
+  "options": {},
+  "attributes": {
+    "image": {
+      "type": "media",
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos"
+      ],
+      "multiple": true,
+      "required": false
+    }
+  }
+}

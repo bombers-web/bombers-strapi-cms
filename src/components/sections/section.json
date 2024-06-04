@@ -1,0 +1,44 @@
+{
+  "collectionName": "components_sections_sections",
+  "info": {
+    "icon": "bars",
+    "description": "",
+    "displayName": "section"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "subtitle": {
+      "type": "string"
+    },
+    "content": {
+      "type": "richtext"
+    },
+    "display": {
+      "type": "boolean"
+    },
+    "image": {
+      "type": "media",
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos"
+      ],
+      "multiple": false,
+      "required": false
+    },
+    "imagePosition": {
+      "type": "string"
+    },
+    "cards": {
+      "type": "boolean"
+    },
+    "links": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.link"
+    }
+  }
+}

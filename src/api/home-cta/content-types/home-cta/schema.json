@@ -1,0 +1,23 @@
+{
+  "kind": "singleType",
+  "collectionName": "home_ctas",
+  "info": {
+    "singularName": "home-cta",
+    "pluralName": "home-ctas",
+    "displayName": "Home-cta",
+    "name": "home-cta"
+  },
+  "options": {
+    "increments": true,
+    "timestamps": true,
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "content": {
+      "type": "component",
+      "repeatable": false,
+      "component": "sections.hero"
+    }
+  }
+}

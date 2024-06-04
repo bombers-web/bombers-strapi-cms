@@ -1,0 +1,35 @@
+{
+  "collectionName": "components_shared_metas",
+  "info": {
+    "icon": "ankh",
+    "displayName": "meta"
+  },
+  "options": {},
+  "attributes": {
+    "name": {
+      "type": "string"
+    },
+    "content": {
+      "type": "string"
+    },
+    "preventIndexing": {
+      "type": "boolean"
+    },
+    "display": {
+      "type": "boolean"
+    },
+    "data": {
+      "type": "json"
+    },
+    "metaImage": {
+      "type": "media",
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos"
+      ],
+      "multiple": false,
+      "required": false
+    }
+  }
+}
