@@ -6,4 +6,12 @@
 
 const { createCoreService } = require('@strapi/strapi').factories;
 
-module.exports = createCoreService('api::team.team');
+module.exports = createCoreService('api::team.team', {
+    config: {
+      find: {
+        auth: false,
+        policies: [],
+        middlewares: [],
+      }
+    }
+});

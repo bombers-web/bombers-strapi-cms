@@ -6,4 +6,12 @@
 
 const { createCoreRouter } = require('@strapi/strapi').factories;
 
-module.exports = createCoreRouter('api::sponsor.sponsor');
+module.exports = createCoreRouter('api::sponsor.sponsor', {
+    config: {
+      find: {
+        auth: false,
+        policies: [],
+        middlewares: [],
+      }
+    }
+});
