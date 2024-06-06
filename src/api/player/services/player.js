@@ -6,4 +6,13 @@
 
 const { createCoreService } = require('@strapi/strapi').factories;
 
-module.exports = createCoreService('api::player.player');
+module.exports = createCoreService('api::player.player', {
+    only: ['find'],
+    config: {
+      find: {
+        auth: false,
+        policies: [],
+        middlewares: [],
+      }
+    }
+});
