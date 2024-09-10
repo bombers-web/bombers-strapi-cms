@@ -843,6 +843,40 @@ export interface ApiArticleArticle extends Schema.CollectionType {
   };
 }
 
+export interface ApiBoardMemberBoardMember extends Schema.CollectionType {
+  collectionName: 'board_members';
+  info: {
+    singularName: 'board-member';
+    pluralName: 'board-members';
+    displayName: 'Board-member';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    first_name: Attribute.String & Attribute.Required;
+    last_name: Attribute.String & Attribute.Required;
+    position: Attribute.String & Attribute.Required;
+    email: Attribute.String & Attribute.Required;
+    photo: Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::board-member.board-member',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::board-member.board-member',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
 export interface ApiCategoryCategory extends Schema.CollectionType {
   collectionName: 'categories';
   info: {
@@ -1401,6 +1435,7 @@ declare module '@strapi/types' {
       'plugin::users-permissions.role': PluginUsersPermissionsRole;
       'plugin::users-permissions.user': PluginUsersPermissionsUser;
       'api::article.article': ApiArticleArticle;
+      'api::board-member.board-member': ApiBoardMemberBoardMember;
       'api::category.category': ApiCategoryCategory;
       'api::coach.coach': ApiCoachCoach;
       'api::game.game': ApiGameGame;
