@@ -5,11 +5,10 @@
     "singularName": "team",
     "pluralName": "teams",
     "displayName": "Team",
-    "name": "team"
+    "name": "team",
+    "description": ""
   },
   "options": {
-    "increments": true,
-    "timestamps": true,
     "draftAndPublish": false
   },
   "pluginOptions": {},
@@ -17,24 +16,30 @@
     "name": {
       "type": "string"
     },
-    "division": {
-      "type": "string"
-    },
     "logo": {
       "type": "media",
+      "multiple": false,
+      "required": false,
       "allowedTypes": [
         "images",
         "files",
         "videos"
-      ],
-      "multiple": false,
-      "required": false
+      ]
     },
     "bio": {
       "type": "text"
     },
     "location": {
       "type": "string"
+    },
+    "division": {
+      "type": "enumeration",
+      "enum": [
+        "D1",
+        "D2",
+        "D3",
+        "D4"
+      ]
     }
   }
 }

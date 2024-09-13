@@ -958,10 +958,9 @@ export interface ApiGameGame extends Schema.CollectionType {
     pluralName: 'games';
     displayName: 'Game';
     name: 'game';
+    description: '';
   };
   options: {
-    increments: true;
-    timestamps: true;
     draftAndPublish: false;
   };
   attributes: {
@@ -970,7 +969,7 @@ export interface ApiGameGame extends Schema.CollectionType {
     preview: Attribute.Text;
     finished: Attribute.Boolean & Attribute.DefaultTo<false>;
     away_score: Attribute.String;
-    division: Attribute.Enumeration<['d1', 'd3']>;
+    division: Attribute.Enumeration<['d1', 'd2']>;
     updates: Attribute.RichText;
     home: Attribute.Relation<'api::game.game', 'oneToOne', 'api::team.team'>;
     away: Attribute.Relation<'api::game.game', 'oneToOne', 'api::team.team'>;
@@ -1267,10 +1266,9 @@ export interface ApiPlayerPlayer extends Schema.CollectionType {
     pluralName: 'players';
     displayName: 'Player';
     name: 'player';
+    description: '';
   };
   options: {
-    increments: true;
-    timestamps: true;
     draftAndPublish: false;
   };
   attributes: {
@@ -1284,7 +1282,7 @@ export interface ApiPlayerPlayer extends Schema.CollectionType {
     weight: Attribute.String;
     picture: Attribute.Media<'images' | 'files' | 'videos'>;
     date_of_birth: Attribute.Date;
-    division: Attribute.Enumeration<['D1', 'D3']>;
+    division: Attribute.Enumeration<['D1', 'D2']>;
     position: Attribute.Integer &
       Attribute.SetMinMax<
         {
@@ -1357,18 +1355,17 @@ export interface ApiTeamTeam extends Schema.CollectionType {
     pluralName: 'teams';
     displayName: 'Team';
     name: 'team';
+    description: '';
   };
   options: {
-    increments: true;
-    timestamps: true;
     draftAndPublish: false;
   };
   attributes: {
     name: Attribute.String;
-    division: Attribute.String;
     logo: Attribute.Media<'images' | 'files' | 'videos'>;
     bio: Attribute.Text;
     location: Attribute.String;
+    division: Attribute.Enumeration<['D1', 'D2', 'D3', 'D4']>;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<'api::team.team', 'oneToOne', 'admin::user'> &

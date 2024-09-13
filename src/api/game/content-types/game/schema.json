@@ -5,11 +5,10 @@
     "singularName": "game",
     "pluralName": "games",
     "displayName": "Game",
-    "name": "game"
+    "name": "game",
+    "description": ""
   },
   "options": {
-    "increments": true,
-    "timestamps": true,
     "draftAndPublish": false
   },
   "pluginOptions": {},
@@ -34,7 +33,7 @@
       "type": "enumeration",
       "enum": [
         "d1",
-        "d3"
+        "d2"
       ]
     },
     "updates": {
@@ -69,13 +68,13 @@
     },
     "image": {
       "type": "media",
+      "multiple": false,
+      "required": false,
       "allowedTypes": [
         "files",
         "images",
         "videos"
-      ],
-      "multiple": false,
-      "required": false
+      ]
     }
   }
 }

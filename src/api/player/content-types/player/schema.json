@@ -5,11 +5,10 @@
     "singularName": "player",
     "pluralName": "players",
     "displayName": "Player",
-    "name": "player"
+    "name": "player",
+    "description": ""
   },
   "options": {
-    "increments": true,
-    "timestamps": true,
     "draftAndPublish": false
   },
   "pluginOptions": {},
@@ -40,13 +39,13 @@
     },
     "picture": {
       "type": "media",
+      "multiple": false,
+      "required": false,
       "allowedTypes": [
         "images",
         "files",
         "videos"
-      ],
-      "multiple": false,
-      "required": false
+      ]
     },
     "date_of_birth": {
       "type": "date"
@@ -55,7 +54,7 @@
       "type": "enumeration",
       "enum": [
         "D1",
-        "D3"
+        "D2"
       ]
     },
     "position": {
@@ -66,11 +65,11 @@
     },
     "hoverPic": {
       "type": "media",
+      "multiple": false,
+      "required": false,
       "allowedTypes": [
         "images"
-      ],
-      "multiple": false,
-      "required": false
+      ]
     },
     "slug": {
       "type": "uid",
