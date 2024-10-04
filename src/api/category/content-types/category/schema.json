@@ -24,7 +24,8 @@
     "contents": {
       "type": "relation",
       "relation": "oneToMany",
-      "target": "api::content.content"
+      "target": "api::content.content",
+      "mappedBy": "category"
     }
   }
 }

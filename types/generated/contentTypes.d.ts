@@ -902,6 +902,7 @@ export interface ApiContentContent extends Schema.CollectionType {
     singularName: 'content';
     pluralName: 'contents';
     displayName: 'Content';
+    description: '';
   };
   options: {
     draftAndPublish: true;
@@ -911,18 +912,19 @@ export interface ApiContentContent extends Schema.CollectionType {
     description: Attribute.String & Attribute.Required;
     content: Attribute.RichText & Attribute.Required;
     published: Attribute.DateTime;
-    category: Attribute.Relation<
-      'api::content.content',
-      'oneToOne',
-      'api::category.category'
-    >;
-    writer: Attribute.Relation<
-      'api::content.content',
-      'oneToOne',
-      'api::writer.writer'
-    >;
     slug: Attribute.String;
     uid: Attribute.UID<'api::content.content', 'slug'>;
+    picture: Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
+    writer: Attribute.Relation<
+      'api::content.content',
+      'manyToOne',
+      'api::writer.writer'
+    >;
+    category: Attribute.Relation<
+      'api::content.content',
+      'manyToOne',
+      'api::category.category'
+    >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
