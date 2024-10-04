@@ -788,61 +788,6 @@ export interface PluginUsersPermissionsUser extends Schema.CollectionType {
   };
 }
 
-export interface ApiArticleArticle extends Schema.CollectionType {
-  collectionName: 'articles';
-  info: {
-    singularName: 'article';
-    pluralName: 'articles';
-    displayName: 'Article';
-    name: 'article';
-  };
-  options: {
-    increments: true;
-    timestamps: true;
-    draftAndPublish: false;
-  };
-  attributes: {
-    title: Attribute.String & Attribute.Required;
-    description: Attribute.Text & Attribute.Required;
-    content: Attribute.RichText & Attribute.Required;
-    publishedAt: Attribute.DateTime & Attribute.Required;
-    status: Attribute.Enumeration<['draft', 'published']> &
-      Attribute.Required &
-      Attribute.DefaultTo<'draft'>;
-    category: Attribute.Relation<
-      'api::article.article',
-      'manyToOne',
-      'api::category.category'
-    >;
-    image: Attribute.Media<'files' | 'images' | 'videos'> & Attribute.Required;
-    author: Attribute.Relation<
-      'api::article.article',
-      'manyToOne',
-      'api::writer.writer'
-    >;
-    likes: Attribute.Integer;
-    comments: Attribute.JSON;
-    slug: Attribute.String & Attribute.Unique;
-    tagline: Attribute.String;
-    uid: Attribute.UID<'api::article.article', 'title'>;
-    highlight: Attribute.Boolean;
-    createdAt: Attribute.DateTime;
-    updatedAt: Attribute.DateTime;
-    createdBy: Attribute.Relation<
-      'api::article.article',
-      'oneToOne',
-      'admin::user'
-    > &
-      Attribute.Private;
-    updatedBy: Attribute.Relation<
-      'api::article.article',
-      'oneToOne',
-      'admin::user'
-    > &
-      Attribute.Private;
-  };
-}
-
 export interface ApiBoardMemberBoardMember extends Schema.CollectionType {
   collectionName: 'board_members';
   info: {
@@ -884,18 +829,18 @@ export interface ApiCategoryCategory extends Schema.CollectionType {
     pluralName: 'categories';
     displayName: 'Category';
     name: 'category';
+    description: '';
   };
   options: {
-    increments: true;
-    timestamps: true;
+    draftAndPublish: false;
   };
   attributes: {
     name: Attribute.String & Attribute.Required;
     slug: Attribute.UID<'api::category.category', 'name'> & Attribute.Required;
-    articles: Attribute.Relation<
+    contents: Attribute.Relation<
       'api::category.category',
       'oneToMany',
-      'api::article.article'
+      'api::content.content'
     >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
@@ -944,6 +889,51 @@ export interface ApiCoachCoach extends Schema.CollectionType {
       Attribute.Private;
     updatedBy: Attribute.Relation<
       'api::coach.coach',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
+export interface ApiContentContent extends Schema.CollectionType {
+  collectionName: 'contents';
+  info: {
+    singularName: 'content';
+    pluralName: 'contents';
+    displayName: 'Content';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    title: Attribute.String & Attribute.Required;
+    description: Attribute.String & Attribute.Required;
+    content: Attribute.RichText & Attribute.Required;
+    published: Attribute.DateTime;
+    category: Attribute.Relation<
+      'api::content.content',
+      'oneToOne',
+      'api::category.category'
+    >;
+    writer: Attribute.Relation<
+      'api::content.content',
+      'oneToOne',
+      'api::writer.writer'
+    >;
+    slug: Attribute.String;
+    uid: Attribute.UID<'api::content.content', 'slug'>;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::content.content',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::content.content',
       'oneToOne',
       'admin::user'
     > &
@@ -1102,11 +1092,6 @@ export interface ApiHomepageHomepage extends Schema.SingleType {
   };
   attributes: {
     seo: Attribute.Component<'shared.seo'>;
-    articles: Attribute.Relation<
-      'api::homepage.homepage',
-      'oneToMany',
-      'api::article.article'
-    >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<
@@ -1382,20 +1367,20 @@ export interface ApiWriterWriter extends Schema.CollectionType {
     pluralName: 'writers';
     displayName: 'Writer';
     name: 'writer';
+    description: '';
   };
   options: {
-    increments: true;
-    timestamps: true;
+    draftAndPublish: false;
   };
   attributes: {
     name: Attribute.String;
     picture: Attribute.Media<'images'>;
-    articles: Attribute.Relation<
+    email: Attribute.String;
+    contents: Attribute.Relation<
       'api::writer.writer',
       'oneToMany',
-      'api::article.article'
+      'api::content.content'
     >;
-    email: Attribute.String;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<
@@ -1431,10 +1416,10 @@ declare module '@strapi/types' {
       'plugin::users-permissions.permission': PluginUsersPermissionsPermission;
       'plugin::users-permissions.role': PluginUsersPermissionsRole;
       'plugin::users-permissions.user': PluginUsersPermissionsUser;
-      'api::article.article': ApiArticleArticle;
       'api::board-member.board-member': ApiBoardMemberBoardMember;
       'api::category.category': ApiCategoryCategory;
       'api::coach.coach': ApiCoachCoach;
+      'api::content.content': ApiContentContent;
       'api::game.game': ApiGameGame;
       'api::global.global': ApiGlobalGlobal;
       'api::history.history': ApiHistoryHistory;
