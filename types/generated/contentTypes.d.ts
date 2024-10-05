@@ -915,15 +915,15 @@ export interface ApiContentContent extends Schema.CollectionType {
     slug: Attribute.String;
     uid: Attribute.UID<'api::content.content', 'slug'>;
     picture: Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
-    writer: Attribute.Relation<
-      'api::content.content',
-      'manyToOne',
-      'api::writer.writer'
-    >;
     category: Attribute.Relation<
       'api::content.content',
       'manyToOne',
       'api::category.category'
+    >;
+    writer: Attribute.Relation<
+      'api::content.content',
+      'manyToOne',
+      'api::writer.writer'
     >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
