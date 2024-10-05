@@ -34,7 +34,7 @@
       "type": "uid",
       "targetField": "slug"
     },
-    "picture": {
+    "image": {
       "type": "media",
       "multiple": false,
       "required": false,
