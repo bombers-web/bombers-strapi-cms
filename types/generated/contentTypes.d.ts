@@ -914,7 +914,7 @@ export interface ApiContentContent extends Schema.CollectionType {
     published: Attribute.DateTime;
     slug: Attribute.String;
     uid: Attribute.UID<'api::content.content', 'slug'>;
-    picture: Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
+    image: Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
     category: Attribute.Relation<
       'api::content.content',
       'manyToOne',
