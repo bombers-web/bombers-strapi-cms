@@ -1,0 +1,23 @@
+
+{
+  "kind": "singleType",
+  "collectionName": "youth-rugbys",
+  "info": {
+    "singularName": "youth-rugby",
+    "pluralName": "youth-rugbys",
+    "displayName": "Youth Rugby",
+    "name": "youth-rugby"
+  },
+  "options": {
+    "increments": true,
+    "timestamps": true,
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "section": {
+      "type": "component",
+      "repeatable": true,
+      "component": "sections.section"
+    }
+  }
+}

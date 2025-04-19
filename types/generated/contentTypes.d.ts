@@ -1298,6 +1298,39 @@ export interface ApiPlayerPlayer extends Schema.CollectionType {
   };
 }
 
+export interface ApiPracticePractice extends Schema.SingleType {
+  collectionName: 'practices';
+  info: {
+    singularName: 'practice';
+    pluralName: 'practices';
+    displayName: 'Practice';
+    name: 'practice';
+  };
+  options: {
+    increments: true;
+    timestamps: true;
+    draftAndPublish: true;
+  };
+  attributes: {
+    section: Attribute.Component<'sections.section', true>;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::practice.practice',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::practice.practice',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
 export interface ApiSponsorSponsor extends Schema.CollectionType {
   collectionName: 'sponsors';
   info: {
@@ -1400,6 +1433,39 @@ export interface ApiWriterWriter extends Schema.CollectionType {
   };
 }
 
+export interface ApiYouthRugbyYouthRugby extends Schema.SingleType {
+  collectionName: 'youth-rugbys';
+  info: {
+    singularName: 'youth-rugby';
+    pluralName: 'youth-rugbys';
+    displayName: 'Youth Rugby';
+    name: 'youth-rugby';
+  };
+  options: {
+    increments: true;
+    timestamps: true;
+    draftAndPublish: true;
+  };
+  attributes: {
+    section: Attribute.Component<'sections.section', true>;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::youth-rugby.youth-rugby',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::youth-rugby.youth-rugby',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
 declare module '@strapi/types' {
   export module Shared {
     export interface ContentTypes {
@@ -1432,9 +1498,11 @@ declare module '@strapi/types' {
       'api::menu-item.menu-item': ApiMenuItemMenuItem;
       'api::page.page': ApiPagePage;
       'api::player.player': ApiPlayerPlayer;
+      'api::practice.practice': ApiPracticePractice;
       'api::sponsor.sponsor': ApiSponsorSponsor;
       'api::team.team': ApiTeamTeam;
       'api::writer.writer': ApiWriterWriter;
+      'api::youth-rugby.youth-rugby': ApiYouthRugbyYouthRugby;
     }
   }
 }

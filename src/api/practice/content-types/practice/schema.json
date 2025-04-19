@@ -1,0 +1,23 @@
+
+{
+  "kind": "singleType",
+  "collectionName": "practices",
+  "info": {
+    "singularName": "practice",
+    "pluralName": "practices",
+    "displayName": "Practice",
+    "name": "practice"
+  },
+  "options": {
+    "increments": true,
+    "timestamps": true,
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "section": {
+      "type": "component",
+      "repeatable": true,
+      "component": "sections.section"
+    }
+  }
+}
