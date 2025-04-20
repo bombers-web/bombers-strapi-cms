@@ -14,10 +14,12 @@
   "pluginOptions": {},
   "attributes": {
     "first_name": {
-      "type": "string"
+      "type": "string",
+      "required": true
     },
     "last_name": {
-      "type": "string"
+      "type": "string",
+      "required": true
     },
     "nickname": {
       "type": "string"
@@ -52,6 +54,7 @@
     },
     "division": {
       "type": "enumeration",
+      "required": true,
       "enum": [
         "D1",
         "D2"
@@ -73,7 +76,8 @@
     },
     "slug": {
       "type": "uid",
-      "targetField": "first_name"
+      "targetField": "first_name",
+      "required": true
     }
   }
 }

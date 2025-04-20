@@ -15,7 +15,8 @@
   "pluginOptions": {},
   "attributes": {
     "first_name": {
-      "type": "string"
+      "type": "string",
+      "required": true
     },
     "last_name": {
       "type": "string"
