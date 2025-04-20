@@ -7,11 +7,15 @@ module.exports = {
         args: 'run start',
         env: {
           NODE_ENV: 'production',
+          PORT: 8080
         },
         output: './logs/production.out.log',
         error: './logs/production.err.log',
         log_date_format: 'YYYY-MM-DD HH:mm:ss',
-        restart_delay: 1000,
+        max_memory_restart: '1G', // Restart if memory exceeds 1GB
+        max_restarts: 10, // Maximum number of restarts
+        min_uptime: '5s', // Minimum uptime to consider app as running
+        restart_delay: 4000, // Time to wait before restarting
         kill_timeout: 3000,
         exec_mode: 'fork', // Recommended for Strapi
         instances: 1,
@@ -25,12 +29,16 @@ module.exports = {
         args: 'run develop',
         env: {
           NODE_ENV: 'development',
+          PORT: 1337
         },
         output: './logs/development.out.log',
         error: './logs/development.err.log',
         log_date_format: 'YYYY-MM-DD HH:mm:ss',
-        restart_delay: 1000,
         kill_timeout: 3000,
+        max_memory_restart: '1G', // Restart if memory exceeds 1GB
+        max_restarts: 10, // Maximum number of restarts
+        min_uptime: '5s', // Minimum uptime to consider app as running
+        restart_delay: 4000, // Time to wait before restarting
         exec_mode: 'fork', // Recommended for Strapi
         instances: 1,
         autorestart: false,
