@@ -1125,7 +1125,7 @@ export interface ApiLegendLegend extends Schema.CollectionType {
     draftAndPublish: true;
   };
   attributes: {
-    first_name: Attribute.String;
+    first_name: Attribute.String & Attribute.Required;
     last_name: Attribute.String;
     bio: Attribute.Text;
     position: Attribute.String;
@@ -1259,8 +1259,8 @@ export interface ApiPlayerPlayer extends Schema.CollectionType {
     draftAndPublish: false;
   };
   attributes: {
-    first_name: Attribute.String;
-    last_name: Attribute.String;
+    first_name: Attribute.String & Attribute.Required;
+    last_name: Attribute.String & Attribute.Required;
     nickname: Attribute.String;
     bio: Attribute.Text;
     nationality: Attribute.String;
@@ -1269,7 +1269,7 @@ export interface ApiPlayerPlayer extends Schema.CollectionType {
     weight: Attribute.String;
     picture: Attribute.Media<'images' | 'files' | 'videos'>;
     date_of_birth: Attribute.Date;
-    division: Attribute.Enumeration<['D1', 'D2']>;
+    division: Attribute.Enumeration<['D1', 'D2']> & Attribute.Required;
     position: Attribute.Integer &
       Attribute.SetMinMax<
         {
@@ -1280,7 +1280,8 @@ export interface ApiPlayerPlayer extends Schema.CollectionType {
       > &
       Attribute.DefaultTo<1>;
     hoverPic: Attribute.Media<'images'>;
-    slug: Attribute.UID<'api::player.player', 'first_name'>;
+    slug: Attribute.UID<'api::player.player', 'first_name'> &
+      Attribute.Required;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<
@@ -1345,7 +1346,7 @@ export interface ApiSponsorSponsor extends Schema.CollectionType {
     draftAndPublish: false;
   };
   attributes: {
-    name: Attribute.String;
+    name: Attribute.String & Attribute.Required;
     image: Attribute.Media<'images' | 'files' | 'videos'>;
     level: Attribute.Enumeration<
       ['platinum', 'gold', 'silver', 'bronze', 'other']
@@ -1381,7 +1382,7 @@ export interface ApiTeamTeam extends Schema.CollectionType {
     draftAndPublish: false;
   };
   attributes: {
-    name: Attribute.String;
+    name: Attribute.String & Attribute.Required;
     logo: Attribute.Media<'images' | 'files' | 'videos'>;
     bio: Attribute.Text;
     location: Attribute.String;
