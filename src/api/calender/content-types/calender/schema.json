@@ -1,0 +1,25 @@
+{
+  "kind": "collectionType",
+  "collectionName": "calenders",
+  "info": {
+    "singularName": "calender",
+    "pluralName": "calenders",
+    "displayName": "Calender"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "calender": {
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ],
+      "type": "media",
+      "multiple": false
+    }
+  }
+}

@@ -822,6 +822,36 @@ export interface ApiBoardMemberBoardMember extends Schema.CollectionType {
   };
 }
 
+export interface ApiCalenderCalender extends Schema.CollectionType {
+  collectionName: 'calenders';
+  info: {
+    singularName: 'calender';
+    pluralName: 'calenders';
+    displayName: 'Calender';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    calender: Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::calender.calender',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::calender.calender',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
 export interface ApiCategoryCategory extends Schema.CollectionType {
   collectionName: 'categories';
   info: {
@@ -1339,10 +1369,9 @@ export interface ApiSponsorSponsor extends Schema.CollectionType {
     pluralName: 'sponsors';
     displayName: 'Sponsor';
     name: 'sponsor';
+    description: '';
   };
   options: {
-    increments: true;
-    timestamps: true;
     draftAndPublish: false;
   };
   attributes: {
@@ -1352,6 +1381,7 @@ export interface ApiSponsorSponsor extends Schema.CollectionType {
       ['platinum', 'gold', 'silver', 'bronze', 'other']
     > &
       Attribute.DefaultTo<'bronze'>;
+    sponsor_link: Attribute.String;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<
@@ -1362,6 +1392,39 @@ export interface ApiSponsorSponsor extends Schema.CollectionType {
       Attribute.Private;
     updatedBy: Attribute.Relation<
       'api::sponsor.sponsor',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
+export interface ApiSubscriptionSubscription extends Schema.CollectionType {
+  collectionName: 'subscriptions';
+  info: {
+    singularName: 'subscription';
+    pluralName: 'subscriptions';
+    displayName: 'Subscription';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    subscription_name: Attribute.String;
+    planId: Attribute.String;
+    cost: Attribute.Integer;
+    benefits: Attribute.Text;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::subscription.subscription',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::subscription.subscription',
       'oneToOne',
       'admin::user'
     > &
@@ -1486,6 +1549,7 @@ declare module '@strapi/types' {
       'plugin::users-permissions.role': PluginUsersPermissionsRole;
       'plugin::users-permissions.user': PluginUsersPermissionsUser;
       'api::board-member.board-member': ApiBoardMemberBoardMember;
+      'api::calender.calender': ApiCalenderCalender;
       'api::category.category': ApiCategoryCategory;
       'api::coach.coach': ApiCoachCoach;
       'api::content.content': ApiContentContent;
@@ -1501,6 +1565,7 @@ declare module '@strapi/types' {
       'api::player.player': ApiPlayerPlayer;
       'api::practice.practice': ApiPracticePractice;
       'api::sponsor.sponsor': ApiSponsorSponsor;
+      'api::subscription.subscription': ApiSubscriptionSubscription;
       'api::team.team': ApiTeamTeam;
       'api::writer.writer': ApiWriterWriter;
       'api::youth-rugby.youth-rugby': ApiYouthRugbyYouthRugby;

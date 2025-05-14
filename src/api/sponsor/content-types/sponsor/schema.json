@@ -5,11 +5,10 @@
     "singularName": "sponsor",
     "pluralName": "sponsors",
     "displayName": "Sponsor",
-    "name": "sponsor"
+    "name": "sponsor",
+    "description": ""
   },
   "options": {
-    "increments": true,
-    "timestamps": true,
     "draftAndPublish": false
   },
   "pluginOptions": {},
@@ -20,13 +19,13 @@
     },
     "image": {
       "type": "media",
+      "multiple": false,
+      "required": false,
       "allowedTypes": [
         "images",
         "files",
         "videos"
-      ],
-      "multiple": false,
-      "required": false
+      ]
     },
     "level": {
       "type": "enumeration",
@@ -38,6 +37,9 @@
         "other"
       ],
       "default": "bronze"
+    },
+    "sponsor_link": {
+      "type": "string"
     }
   }
 }
