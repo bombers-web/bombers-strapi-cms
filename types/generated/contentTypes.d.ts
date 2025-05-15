@@ -828,12 +828,14 @@ export interface ApiCalenderCalender extends Schema.CollectionType {
     singularName: 'calender';
     pluralName: 'calenders';
     displayName: 'Calender';
+    description: '';
   };
   options: {
     draftAndPublish: true;
   };
   attributes: {
     calender: Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
+    date: Attribute.Date;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
