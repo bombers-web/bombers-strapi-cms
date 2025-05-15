@@ -4,24 +4,36 @@
   "info": {
     "singularName": "subscription",
     "pluralName": "subscriptions",
-    "displayName": "Subscription"
+    "displayName": "Subscription",
+    "description": ""
   },
   "options": {
     "draftAndPublish": true
   },
   "pluginOptions": {},
   "attributes": {
-    "subscription_name": {
-      "type": "string"
+    "description": {
+      "type": "string",
+      "required": true
     },
     "planId": {
-      "type": "string"
+      "type": "string",
+      "required": true
     },
     "cost": {
-      "type": "integer"
+      "type": "integer",
+      "required": true
     },
     "benefits": {
       "type": "text"
+    },
+    "type": {
+      "type": "enumeration",
+      "enum": [
+        "monthly",
+        "yearly"
+      ],
+      "required": true
     }
   }
 }

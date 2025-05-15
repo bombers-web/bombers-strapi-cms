@@ -1405,15 +1405,17 @@ export interface ApiSubscriptionSubscription extends Schema.CollectionType {
     singularName: 'subscription';
     pluralName: 'subscriptions';
     displayName: 'Subscription';
+    description: '';
   };
   options: {
     draftAndPublish: true;
   };
   attributes: {
-    subscription_name: Attribute.String;
-    planId: Attribute.String;
-    cost: Attribute.Integer;
+    description: Attribute.String & Attribute.Required;
+    planId: Attribute.String & Attribute.Required;
+    cost: Attribute.Integer & Attribute.Required;
     benefits: Attribute.Text;
+    type: Attribute.Enumeration<['monthly', 'yearly']> & Attribute.Required;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
