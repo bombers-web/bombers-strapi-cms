@@ -38,7 +38,7 @@
       ],
       "default": "bronze"
     },
-    "sponsor_link": {
+    "website": {
       "type": "string"
     }
   }

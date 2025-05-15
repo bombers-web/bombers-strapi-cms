@@ -1381,7 +1381,7 @@ export interface ApiSponsorSponsor extends Schema.CollectionType {
       ['platinum', 'gold', 'silver', 'bronze', 'other']
     > &
       Attribute.DefaultTo<'bronze'>;
-    sponsor_link: Attribute.String;
+    website: Attribute.String;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<
