@@ -16,7 +16,7 @@ module.exports = ({ env }) => ({
         rejectUnauthorized: false, // For self-signed certificates
       },
       settings: {
-        // forceMigration: false,
+        forceMigration: false,
         // runMigrations: false,
       }
     },
