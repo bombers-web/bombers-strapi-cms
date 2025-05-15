@@ -17,7 +17,7 @@ module.exports = ({ env }) => ({
       },
       settings: {
         forceMigration: false,
-        runMigrations: false,
+        // runMigrations: false,
       }
     },
   },
