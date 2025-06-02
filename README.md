@@ -25,7 +25,7 @@ Your local Strapi admin panel will be accessible at http://localhost:1337/admin 
 
 # Contributing
 
-    We welcome contributions from club members! If you'd like to help improve the Strapi backend, please follow these steps:
+We welcome contributions from club members! If you'd like to help improve the Strapi backend, please follow these steps:
 
     Fork the repository.
 
