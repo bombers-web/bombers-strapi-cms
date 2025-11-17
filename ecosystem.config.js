@@ -1,14 +1,14 @@
 module.exports = {
     apps: [
       {
-        name: 'strapi-production',
+        name: 'strapi-app',
         cwd: '.', // Assuming your package.json is in the root
         script: 'npm',
         args: 'run start',
         env: {
           NODE_ENV: 'production'
         },
-        output: './logs/prgitoduction.out.log',
+        output: './logs/production.out.log',
         error: './logs/production.err.log',
         log_date_format: 'YYYY-MM-DD HH:mm:ss',
         max_memory_restart: '1G', // Restart if memory exceeds 1GB

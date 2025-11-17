@@ -1,27 +1,42 @@
-// // New v5 format
-// module.exports = ({ env }) => ({
-//   client: env('DATABASE_CLIENT', 'sqlite'),
-//   connection: {
-//     filename: env('DATABASE_FILENAME', '.tmp/data.db'),
-//     // PostgreSQL config for production
-//     host: env('DATABASE_HOST'),
-//     port: env.int('DATABASE_PORT'),
-//     database: env('DATABASE_NAME'),
-//     user: env('DATABASE_USERNAME'),
-//     password: env('DATABASE_PASSWORD'),
-//     ssl: env.bool('DATABASE_SSL', false) && {
-//       rejectUnauthorized: env.bool('DATABASE_SSL_REJECT_UNAUTHORIZED', true),
-//     },
-//   },
-// });
+const parse = require("pg-connection-string").parse;
 
-module.exports = ({ env }) => ({
-  connection: {
-    client: 'sqlite',
+module.exports = ({ env }) => {
+  const databaseUrl = env('DEV_DATABASE_URL');
+  const config = parse(databaseUrl);
+
+  if (!config) {
+    console.log('No DATABASE_URL found, using SQLite');
+    return getSqliteConfig();
+  }
+
+  // Use parsed PostgreSQL config
+  return {
     connection: {
-      filename: env('DATABASE_FILENAME', '.tmp/data.db'),
+      client: 'postgres',
+      connection: {
+        host: config.host,
+        port: config.port,
+        database: config.database,
+        user: config.user,
+        password: config.password,
+        ssl: config.ssl ? { rejectUnauthorized: false } : false,
+        schema: env('DATABASE_SCHEMA', 'public'), // In case you use a custom schema
+      },
+      debug: false,
     },
-    useNullAsDefault: true,
-    debug: false,
-  },
-});
+  };
+};
+
+function getSqliteConfig() {
+  console.log('📁 Falling back to SQLite configuration');
+  return {
+    connection: {
+      client: 'sqlite',
+      connection: {
+        filename: env('DATABASE_FILENAME', '.tmp/data.db'),
+      },
+      useNullAsDefault: true,
+      debug: false,
+    },
+  };
+}
