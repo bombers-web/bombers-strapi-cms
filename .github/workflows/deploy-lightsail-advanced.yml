@@ -2,9 +2,9 @@ name: Deploy to AWS Lightsail (Advanced)
 
 on:
   push:
-    branches: [ master, main ]
+    branches: [ main ]
   pull_request:
-    branches: [ master, main ]
+    branches: [ main ]
     types: [ closed ]
   workflow_dispatch:
     inputs:
@@ -91,7 +91,7 @@ jobs:
     if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.pull_request.merged == true)
     environment: 
       name: ${{ github.event.inputs.environment || 'production' }}
-      url: ${{ secrets.APP_URL }} # Removed because 'secrets' is not supported here
+      url: https://strapi.stlouisbombers.com
     
     steps:
     - name: Download artifact
@@ -105,7 +105,7 @@ jobs:
         host: ${{ secrets.LIGHTSAIL_HOST }}
         username: ${{ secrets.LIGHTSAIL_USERNAME }}
         key: ${{ secrets.LIGHTSAIL_SSH_KEY }}
-        port: ${{ secrets.LIGHTSAIL_PORT || 22 }}
+        port: ${{ secrets.LIGHTSAIL_PORT || '22' }}
         script: |
           set -e  # Exit on any error
           
@@ -170,7 +170,7 @@ jobs:
         host: ${{ secrets.LIGHTSAIL_HOST }}
         username: ${{ secrets.LIGHTSAIL_USERNAME }}
         key: ${{ secrets.LIGHTSAIL_SSH_KEY }}
-        port: ${{ secrets.LIGHTSAIL_PORT || 22 }}
+        port: ${{ secrets.LIGHTSAIL_PORT || '22' }}
         source: "deployment.tar.gz"
         target: "/tmp/"
         
@@ -180,7 +180,7 @@ jobs:
         host: ${{ secrets.LIGHTSAIL_HOST }}
         username: ${{ secrets.LIGHTSAIL_USERNAME }}
         key: ${{ secrets.LIGHTSAIL_SSH_KEY }}
-        port: ${{ secrets.LIGHTSAIL_PORT || 22 }}
+        port: ${{ secrets.LIGHTSAIL_PORT || '22' }}
         script: |
           cd /opt/bombers-strapi-cms
           tar -xzf /tmp/deployment.tar.gz --overwrite
@@ -199,7 +199,7 @@ jobs:
         host: ${{ secrets.LIGHTSAIL_HOST }}
         username: ${{ secrets.LIGHTSAIL_USERNAME }}
         key: ${{ secrets.LIGHTSAIL_SSH_KEY }}
-        port: ${{ secrets.LIGHTSAIL_PORT || 22 }}
+        port: ${{ secrets.LIGHTSAIL_PORT || '22' }}
         script: |
           echo "🔄 Rolling back deployment..."
           
