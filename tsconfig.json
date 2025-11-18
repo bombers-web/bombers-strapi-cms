@@ -4,7 +4,6 @@
     "outDir": "dist",
     "rootDir": ".",
     "allowJs": true, //enables the build without .ts files
-    "ignoreDeprecations": "6.0"
   },
   "include": ["./", "src/**/*.json"],
   "exclude": [

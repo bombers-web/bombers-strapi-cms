@@ -1,23 +1,29 @@
-
 {
-  "kind": "singleType",
+  "kind": "collectionType",
   "collectionName": "practices",
   "info": {
     "singularName": "practice",
     "pluralName": "practices",
-    "displayName": "Practice",
-    "name": "practice"
+    "displayName": "Practice"
   },
   "options": {
-    "increments": true,
-    "timestamps": true,
     "draftAndPublish": true
   },
+  "pluginOptions": {},
   "attributes": {
-    "section": {
-      "type": "component",
-      "repeatable": true,
-      "component": "sections.section"
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "active": {
+      "type": "boolean",
+      "required": true,
+      "default": false
+    },
+    "location": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::location.location"
     }
   }
 }

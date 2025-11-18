@@ -621,50 +621,12 @@ export interface ApiGameGame extends Struct.CollectionTypeSchema {
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<'oneToMany', 'api::game.game'> &
       Schema.Attribute.Private;
-    location: Schema.Attribute.String;
-    preview: Schema.Attribute.Text;
+    location: Schema.Attribute.Relation<'oneToOne', 'api::location.location'>;
     publishedAt: Schema.Attribute.DateTime;
-    report: Schema.Attribute.Text;
-    slug: Schema.Attribute.UID;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    updates: Schema.Attribute.RichText;
     winner: Schema.Attribute.Relation<'oneToOne', 'api::team.team'>;
-  };
-}
-
-export interface ApiGlobalGlobal extends Struct.SingleTypeSchema {
-  collectionName: 'globals';
-  info: {
-    displayName: 'Global';
-    name: 'global';
-    pluralName: 'globals';
-    singularName: 'global';
-  };
-  options: {
-    draftAndPublish: false;
-    increments: true;
-    timestamps: true;
-  };
-  attributes: {
-    createdAt: Schema.Attribute.DateTime;
-    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
-      Schema.Attribute.Private;
-    defaultSeo: Schema.Attribute.Component<'shared.seo', false> &
-      Schema.Attribute.Required;
-    favicon: Schema.Attribute.Media<'images' | 'files' | 'videos'>;
-    locale: Schema.Attribute.String & Schema.Attribute.Private;
-    localizations: Schema.Attribute.Relation<
-      'oneToMany',
-      'api::global.global'
-    > &
-      Schema.Attribute.Private;
-    publishedAt: Schema.Attribute.DateTime;
-    siteName: Schema.Attribute.String & Schema.Attribute.Required;
-    updatedAt: Schema.Attribute.DateTime;
-    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
-      Schema.Attribute.Private;
   };
 }
 
@@ -796,102 +758,31 @@ export interface ApiLegendLegend extends Struct.CollectionTypeSchema {
   };
 }
 
-export interface ApiMenuItemMenuItem extends Struct.CollectionTypeSchema {
-  collectionName: 'menu_items';
+export interface ApiLocationLocation extends Struct.CollectionTypeSchema {
+  collectionName: 'locations';
   info: {
-    displayName: 'Menu-item';
-    name: 'menu-item';
-    pluralName: 'menu-items';
-    singularName: 'menu-item';
+    displayName: 'Location';
+    pluralName: 'locations';
+    singularName: 'location';
   };
   options: {
     draftAndPublish: false;
-    increments: true;
-    timestamps: true;
   };
   attributes: {
+    address: Schema.Attribute.String & Schema.Attribute.Required;
+    city: Schema.Attribute.String;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    displayName: Schema.Attribute.String;
-    itemId: Schema.Attribute.String;
+    home: Schema.Attribute.Boolean;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
-      'api::menu-item.menu-item'
+      'api::location.location'
     > &
       Schema.Attribute.Private;
-    parent: Schema.Attribute.Enumeration<['self', 'club', 'team', 'more']>;
+    name: Schema.Attribute.String & Schema.Attribute.Required;
     publishedAt: Schema.Attribute.DateTime;
-    slug: Schema.Attribute.String;
-    updatedAt: Schema.Attribute.DateTime;
-    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
-      Schema.Attribute.Private;
-  };
-}
-
-export interface ApiMenuMenu extends Struct.SingleTypeSchema {
-  collectionName: 'menus';
-  info: {
-    displayName: 'Menu';
-    name: 'menu';
-    pluralName: 'menus';
-    singularName: 'menu';
-  };
-  options: {
-    draftAndPublish: true;
-    increments: true;
-    timestamps: true;
-  };
-  attributes: {
-    createdAt: Schema.Attribute.DateTime;
-    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
-      Schema.Attribute.Private;
-    locale: Schema.Attribute.String & Schema.Attribute.Private;
-    localizations: Schema.Attribute.Relation<'oneToMany', 'api::menu.menu'> &
-      Schema.Attribute.Private;
-    menu_items: Schema.Attribute.Relation<
-      'oneToMany',
-      'api::menu-item.menu-item'
-    >;
-    publishedAt: Schema.Attribute.DateTime;
-    updatedAt: Schema.Attribute.DateTime;
-    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
-      Schema.Attribute.Private;
-  };
-}
-
-export interface ApiPagePage extends Struct.CollectionTypeSchema {
-  collectionName: 'pages';
-  info: {
-    displayName: 'Page';
-    name: 'page';
-    pluralName: 'pages';
-    singularName: 'page';
-  };
-  options: {
-    draftAndPublish: true;
-    increments: true;
-    timestamps: true;
-  };
-  attributes: {
-    block: Schema.Attribute.DynamicZone<
-      ['sections.hero', 'sections.section', 'sections.form']
-    >;
-    createdAt: Schema.Attribute.DateTime;
-    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
-      Schema.Attribute.Private;
-    locale: Schema.Attribute.String & Schema.Attribute.Private;
-    localizations: Schema.Attribute.Relation<'oneToMany', 'api::page.page'> &
-      Schema.Attribute.Private;
-    parent: Schema.Attribute.Enumeration<['self', 'more', 'club', 'team']> &
-      Schema.Attribute.Required &
-      Schema.Attribute.DefaultTo<'self'>;
-    published: Schema.Attribute.DateTime;
-    publishedAt: Schema.Attribute.DateTime;
-    Seo: Schema.Attribute.Component<'shared.seo', false>;
-    slug: Schema.Attribute.String;
-    title: Schema.Attribute.String & Schema.Attribute.Required;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -916,8 +807,6 @@ export interface ApiPlayerPlayer extends Struct.CollectionTypeSchema {
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     date_of_birth: Schema.Attribute.Date;
-    division: Schema.Attribute.Enumeration<['D1', 'D2']> &
-      Schema.Attribute.Required;
     first_name: Schema.Attribute.String & Schema.Attribute.Required;
     height: Schema.Attribute.String;
     hometown: Schema.Attribute.String;
@@ -942,7 +831,7 @@ export interface ApiPlayerPlayer extends Struct.CollectionTypeSchema {
       > &
       Schema.Attribute.DefaultTo<1>;
     publishedAt: Schema.Attribute.DateTime;
-    slug: Schema.Attribute.UID<'first_name'> & Schema.Attribute.Required;
+    slug: Schema.Attribute.UID<'last_name'> & Schema.Attribute.Required;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -950,20 +839,20 @@ export interface ApiPlayerPlayer extends Struct.CollectionTypeSchema {
   };
 }
 
-export interface ApiPracticePractice extends Struct.SingleTypeSchema {
+export interface ApiPracticePractice extends Struct.CollectionTypeSchema {
   collectionName: 'practices';
   info: {
     displayName: 'Practice';
-    name: 'practice';
     pluralName: 'practices';
     singularName: 'practice';
   };
   options: {
     draftAndPublish: true;
-    increments: true;
-    timestamps: true;
   };
   attributes: {
+    active: Schema.Attribute.Boolean &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<false>;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -973,8 +862,9 @@ export interface ApiPracticePractice extends Struct.SingleTypeSchema {
       'api::practice.practice'
     > &
       Schema.Attribute.Private;
+    location: Schema.Attribute.Relation<'oneToOne', 'api::location.location'>;
+    name: Schema.Attribute.String & Schema.Attribute.Required;
     publishedAt: Schema.Attribute.DateTime;
-    section: Schema.Attribute.Component<'sections.section', true>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -1110,37 +1000,6 @@ export interface ApiWriterWriter extends Struct.CollectionTypeSchema {
     name: Schema.Attribute.String;
     picture: Schema.Attribute.Media<'images'>;
     publishedAt: Schema.Attribute.DateTime;
-    updatedAt: Schema.Attribute.DateTime;
-    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
-      Schema.Attribute.Private;
-  };
-}
-
-export interface ApiYouthRugbyYouthRugby extends Struct.SingleTypeSchema {
-  collectionName: 'youth-rugbys';
-  info: {
-    displayName: 'Youth Rugby';
-    name: 'youth-rugby';
-    pluralName: 'youth-rugbys';
-    singularName: 'youth-rugby';
-  };
-  options: {
-    draftAndPublish: true;
-    increments: true;
-    timestamps: true;
-  };
-  attributes: {
-    createdAt: Schema.Attribute.DateTime;
-    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
-      Schema.Attribute.Private;
-    locale: Schema.Attribute.String & Schema.Attribute.Private;
-    localizations: Schema.Attribute.Relation<
-      'oneToMany',
-      'api::youth-rugby.youth-rugby'
-    > &
-      Schema.Attribute.Private;
-    publishedAt: Schema.Attribute.DateTime;
-    section: Schema.Attribute.Component<'sections.section', true>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -1663,21 +1522,17 @@ declare module '@strapi/strapi' {
       'api::coach.coach': ApiCoachCoach;
       'api::content.content': ApiContentContent;
       'api::game.game': ApiGameGame;
-      'api::global.global': ApiGlobalGlobal;
       'api::history.history': ApiHistoryHistory;
       'api::home-cta.home-cta': ApiHomeCtaHomeCta;
       'api::homepage.homepage': ApiHomepageHomepage;
       'api::legend.legend': ApiLegendLegend;
-      'api::menu-item.menu-item': ApiMenuItemMenuItem;
-      'api::menu.menu': ApiMenuMenu;
-      'api::page.page': ApiPagePage;
+      'api::location.location': ApiLocationLocation;
       'api::player.player': ApiPlayerPlayer;
       'api::practice.practice': ApiPracticePractice;
       'api::sponsor.sponsor': ApiSponsorSponsor;
       'api::subscription.subscription': ApiSubscriptionSubscription;
       'api::team.team': ApiTeamTeam;
       'api::writer.writer': ApiWriterWriter;
-      'api::youth-rugby.youth-rugby': ApiYouthRugbyYouthRugby;
       'plugin::content-releases.release': PluginContentReleasesRelease;
       'plugin::content-releases.release-action': PluginContentReleasesReleaseAction;
       'plugin::i18n.locale': PluginI18NLocale;
