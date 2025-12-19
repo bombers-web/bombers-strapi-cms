@@ -7,14 +7,10 @@
     "displayName": "Practice"
   },
   "options": {
-    "draftAndPublish": true
+    "draftAndPublish": false
   },
   "pluginOptions": {},
   "attributes": {
-    "name": {
-      "type": "string",
-      "required": true
-    },
     "active": {
       "type": "boolean",
       "required": true,
@@ -24,6 +20,14 @@
       "type": "relation",
       "relation": "oneToOne",
       "target": "api::location.location"
+    },
+    "start_time": {
+      "type": "time",
+      "required": true,
+      "default": "18:00:00.000"
+    },
+    "end_time": {
+      "type": "time"
     }
   }
 }

@@ -65,6 +65,16 @@
       "type": "relation",
       "relation": "oneToOne",
       "target": "api::location.location"
+    },
+    "game_type": {
+      "type": "enumeration",
+      "enum": [
+        "friendly",
+        "championship",
+        "playoff",
+        "league",
+        "sevens"
+      ]
     }
   }
 }

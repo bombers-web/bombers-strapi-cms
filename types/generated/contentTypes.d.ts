@@ -454,7 +454,17 @@ export interface ApiBoardMemberBoardMember extends Struct.CollectionTypeSchema {
     > &
       Schema.Attribute.Private;
     photo: Schema.Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
-    position: Schema.Attribute.String & Schema.Attribute.Required;
+    position: Schema.Attribute.Enumeration<
+      [
+        'President',
+        'Vice President',
+        'Director of Operations',
+        'Treasurer',
+        'Secretary',
+        'Marketing/Communications Director',
+      ]
+    > &
+      Schema.Attribute.Required;
     publishedAt: Schema.Attribute.DateTime;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
@@ -593,6 +603,37 @@ export interface ApiContentContent extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiEventEvent extends Struct.CollectionTypeSchema {
+  collectionName: 'events';
+  info: {
+    displayName: 'Event';
+    pluralName: 'events';
+    singularName: 'event';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    active: Schema.Attribute.Boolean &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<false>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    date: Schema.Attribute.DateTime & Schema.Attribute.Required;
+    description: Schema.Attribute.Text & Schema.Attribute.Required;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<'oneToMany', 'api::event.event'> &
+      Schema.Attribute.Private;
+    location: Schema.Attribute.String & Schema.Attribute.Required;
+    name: Schema.Attribute.String & Schema.Attribute.Required;
+    publishedAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiGameGame extends Struct.CollectionTypeSchema {
   collectionName: 'games';
   info: {
@@ -615,6 +656,9 @@ export interface ApiGameGame extends Struct.CollectionTypeSchema {
     division: Schema.Attribute.Enumeration<['d1', 'd2']>;
     finished: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
     friendly: Schema.Attribute.Boolean;
+    game_type: Schema.Attribute.Enumeration<
+      ['friendly', 'championship', 'playoff', 'league', 'sevens']
+    >;
     home: Schema.Attribute.Relation<'oneToOne', 'api::team.team'>;
     home_score: Schema.Attribute.String;
     image: Schema.Attribute.Media<'files' | 'images' | 'videos'>;
@@ -847,7 +891,7 @@ export interface ApiPracticePractice extends Struct.CollectionTypeSchema {
     singularName: 'practice';
   };
   options: {
-    draftAndPublish: true;
+    draftAndPublish: false;
   };
   attributes: {
     active: Schema.Attribute.Boolean &
@@ -856,6 +900,7 @@ export interface ApiPracticePractice extends Struct.CollectionTypeSchema {
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    end_time: Schema.Attribute.Time;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
@@ -863,8 +908,10 @@ export interface ApiPracticePractice extends Struct.CollectionTypeSchema {
     > &
       Schema.Attribute.Private;
     location: Schema.Attribute.Relation<'oneToOne', 'api::location.location'>;
-    name: Schema.Attribute.String & Schema.Attribute.Required;
     publishedAt: Schema.Attribute.DateTime;
+    start_time: Schema.Attribute.Time &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'18:00:00.000'>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -881,7 +928,7 @@ export interface ApiSponsorSponsor extends Struct.CollectionTypeSchema {
     singularName: 'sponsor';
   };
   options: {
-    draftAndPublish: false;
+    draftAndPublish: true;
   };
   attributes: {
     createdAt: Schema.Attribute.DateTime;
@@ -1003,6 +1050,38 @@ export interface ApiWriterWriter extends Struct.CollectionTypeSchema {
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+  };
+}
+
+export interface ApiYouthYouth extends Struct.CollectionTypeSchema {
+  collectionName: 'youths';
+  info: {
+    displayName: 'Youth';
+    pluralName: 'youths';
+    singularName: 'youth';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    description: Schema.Attribute.Text & Schema.Attribute.Required;
+    email: Schema.Attribute.Email;
+    image: Schema.Attribute.Media<
+      'images' | 'files' | 'videos' | 'audios',
+      true
+    >;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<'oneToMany', 'api::youth.youth'> &
+      Schema.Attribute.Private;
+    name: Schema.Attribute.String & Schema.Attribute.Required;
+    publishedAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    website: Schema.Attribute.String;
   };
 }
 
@@ -1521,6 +1600,7 @@ declare module '@strapi/strapi' {
       'api::category.category': ApiCategoryCategory;
       'api::coach.coach': ApiCoachCoach;
       'api::content.content': ApiContentContent;
+      'api::event.event': ApiEventEvent;
       'api::game.game': ApiGameGame;
       'api::history.history': ApiHistoryHistory;
       'api::home-cta.home-cta': ApiHomeCtaHomeCta;
@@ -1533,6 +1613,7 @@ declare module '@strapi/strapi' {
       'api::subscription.subscription': ApiSubscriptionSubscription;
       'api::team.team': ApiTeamTeam;
       'api::writer.writer': ApiWriterWriter;
+      'api::youth.youth': ApiYouthYouth;
       'plugin::content-releases.release': PluginContentReleasesRelease;
       'plugin::content-releases.release-action': PluginContentReleasesReleaseAction;
       'plugin::i18n.locale': PluginI18NLocale;
