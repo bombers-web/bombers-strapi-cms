@@ -81,14 +81,11 @@ jobs:
           --exclude=.git \
           --exclude=.github \
           --exclude=.env \
-          build/ \
-          config/ \
-          database/ \
-          public/ \
-          src/ \
-          package.json \
-          package-lock.json \
-          ecosystem.config.js
+          --exclude='*.log' \
+          --exclude='.cache' \
+          --exclude='tmp' \
+          --warning=no-file-changed \
+          .
         ls -lh deployment.tar.gz
 
     - name: Upload Artifact
