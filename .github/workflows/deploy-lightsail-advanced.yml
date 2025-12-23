@@ -74,21 +74,21 @@ jobs:
         ADMIN_JWT_SECRET: ${{ secrets.ADMIN_JWT_SECRET }}
         JWT_SECRET: ${{ secrets.JWT_SECRET }}
         
-    - name: Create deployment artifact
-      run: |
-        tar -czf ../deployment.tar.gz \
-          --exclude=node_modules \
-          --exclude=.git \
-          --exclude=.github \
-          --exclude=*.log \
-          .
-          
-    - name: Upload artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: deployment-artifact
-        path: deployment.tar.gz
-        retention-days: 1
+      - name: Create Archive
+        run: |
+          tar -czf deployment.tar.gz \
+            --exclude=deployment.tar.gz \
+            --exclude=node_modules \
+            --exclude=.git \
+            .
+          ls -lh deployment.tar.gz # This confirms the file exists before moving on
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: deployment-artifact
+          path: deployment.tar.gz  # Ensure this matches the filename above exactly
+          if-no-files-found: error # This will force the job to fail here if the file is missing
 
   deploy:
     name: Deploy to Lightsail
