@@ -38,3 +38,4 @@ We welcome contributions from club members! If you'd like to help improve the St
     Open a Pull Request to the main repository, explaining your changes.
     
 For any questions about the Strapi backend or the club, please reach out to webmanager@stlouisbombers.com.
+
