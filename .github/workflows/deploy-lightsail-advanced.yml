@@ -67,6 +67,12 @@ jobs:
       run: npm run build
       env:
         NODE_ENV: production
+        DATABASE_CLIENT: sqlite # or your actual client
+        DATABASE_URL: postgres://dummy:dummy@localhost:5432/dummy 
+        APP_KEYS: ${{ secrets.APP_KEYS }} # Strapi needs these to build too!
+        API_TOKEN_SALT: ${{ secrets.API_TOKEN_SALT }}
+        ADMIN_JWT_SECRET: ${{ secrets.ADMIN_JWT_SECRET }}
+        JWT_SECRET: ${{ secrets.JWT_SECRET }}
         
     - name: Create deployment artifact
       run: |
