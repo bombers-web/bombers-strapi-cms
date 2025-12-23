@@ -1,4 +1,4 @@
-name: Deploy to AWS Lightsail (Advanced)
+name: Deploy to AWS Lightsail
 
 on:
   push:
@@ -74,25 +74,19 @@ jobs:
         ADMIN_JWT_SECRET: ${{ secrets.ADMIN_JWT_SECRET }}
         JWT_SECRET: ${{ secrets.JWT_SECRET }}
         
-    - name: Create Archive
-      run: |
-        tar -czf deployment.tar.gz \
-          --exclude=node_modules \
-          --exclude=.git \
-          --exclude=.github \
-          --exclude=.env \
-          --exclude='*.log' \
-          --exclude='.cache' \
-          --exclude='tmp' \
-          --warning=no-file-changed \
-          .
-        ls -lh deployment.tar.gz
-
-    - name: Upload Artifact
+    - name: Upload Build Artifact
       uses: actions/upload-artifact@v4
       with:
         name: deployment-artifact
-        path: deployment.tar.gz
+        path: |
+          build/
+          config/
+          database/
+          public/
+          src/
+          package.json
+          package-lock.json
+          ecosystem.config.js
         if-no-files-found: error
 
   deploy:
@@ -109,6 +103,14 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         name: deployment-artifact
+        path: ./deployment
+        
+    - name: Create deployment archive
+      run: |
+        cd deployment
+        tar -czf ../deployment.tar.gz .
+        cd ..
+        ls -lh deployment.tar.gz
         
     - name: Create backup on server
       uses: appleboy/ssh-action@v1.0.0
@@ -141,7 +143,7 @@ jobs:
           
           # Stop the application gracefully
           echo "⏹️ Stopping application..."
-          pm2 stop strapi-app || echo "App not running with PM2"
+          pm2 stop strapi-production || echo "App not running with PM2"
         
     - name: Copy deployment artifact
       uses: appleboy/scp-action@v0.1.4
@@ -183,7 +185,7 @@ jobs:
           
           # Start the application
           echo "▶️ Starting application..."
-          pm2 start ecosystem.config.js --update-env || pm2 restart strapi-app
+          pm2 start ecosystem.config.js --update-env || pm2 restart strapi-production
           
           # Save PM2 configuration
           pm2 save
@@ -227,7 +229,7 @@ jobs:
             cd $APP_DIR
             
             # Stop the application
-            pm2 stop strapi-app || echo "App not running"
+            pm2 stop strapi-production || echo "App not running"
             
             # Restore backup
             tar -xzf "$LATEST_BACKUP"
@@ -236,7 +238,7 @@ jobs:
             npm ci --production --silent
             
             # Restart application
-            pm2 start ecosystem.config.js --update-env || pm2 restart strapi-app
+            pm2 start ecosystem.config.js --update-env || pm2 restart strapi-production
             
             echo "✅ Rollback completed"
           else
