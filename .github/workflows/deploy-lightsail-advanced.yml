@@ -67,27 +67,29 @@ jobs:
       run: npm run build
       env:
         NODE_ENV: production
-        DATABASE_CLIENT: sqlite # or your actual client
+        DATABASE_CLIENT: sqlite
         DATABASE_URL: postgres://dummy:dummy@localhost:5432/dummy 
-        APP_KEYS: ${{ secrets.APP_KEYS }} # Strapi needs these to build too!
+        APP_KEYS: ${{ secrets.APP_KEYS }}
         API_TOKEN_SALT: ${{ secrets.API_TOKEN_SALT }}
         ADMIN_JWT_SECRET: ${{ secrets.ADMIN_JWT_SECRET }}
         JWT_SECRET: ${{ secrets.JWT_SECRET }}
         
     - name: Create Archive
       run: |
-        tar -czf ../deployment.tar.gz \
+        tar -czf deployment.tar.gz \
           --exclude=node_modules \
           --exclude=.git \
+          --exclude=.github \
+          --exclude=.env \
           .
-        ls -lh deployment.tar.gz # This confirms the file exists before moving on
+        ls -lh deployment.tar.gz
 
     - name: Upload Artifact
       uses: actions/upload-artifact@v4
       with:
         name: deployment-artifact
-        path: deployment.tar.gz  # Ensure this matches the filename above exactly
-        if-no-files-found: error # This will force the job to fail here if the file is missing
+        path: deployment.tar.gz
+        if-no-files-found: error
 
   deploy:
     name: Deploy to Lightsail
@@ -104,7 +106,7 @@ jobs:
       with:
         name: deployment-artifact
         
-    - name: Deploy to Lightsail via SSH
+    - name: Create backup on server
       uses: appleboy/ssh-action@v1.0.0
       with:
         host: ${{ secrets.LIGHTSAIL_HOST }}
@@ -112,7 +114,7 @@ jobs:
         key: ${{ secrets.LIGHTSAIL_SSH_KEY }}
         port: ${{ secrets.LIGHTSAIL_PORT || '22' }}
         script: |
-          set -e  # Exit on any error
+          set -e
           
           APP_DIR="/opt/bombers-strapi-cms"
           BACKUP_DIR="/opt/backups"
@@ -132,43 +134,11 @@ jobs:
           
           # Create app directory if it doesn't exist
           mkdir -p $APP_DIR
-          cd $APP_DIR
           
           # Stop the application gracefully
           echo "⏹️ Stopping application..."
           pm2 stop strapi-app || echo "App not running with PM2"
-          
-          # Pull latest changes
-          echo "📥 Pulling latest changes..."
-          git pull origin master
-          
-          # Install production dependencies
-          echo "📦 Installing dependencies..."
-          npm ci --production --silent
-          
-          # Build the application
-          echo "🔨 Building application..."
-          npm run build
-          
-          # Run database migrations if needed
-          echo "🗃️ Running database migrations..."
-          npm run strapi migration:run || echo "No migrations to run"
-          
-          # Start the application
-          echo "▶️ Starting application..."
-          pm2 start ecosystem.config.js --update-env || pm2 restart strapi-app
-          
-          # Health check
-          echo "🏥 Performing health check..."
-          sleep 10
-          curl -f http://localhost:1337/api/health || curl -f http://localhost:1337/_health || echo "Health check endpoint not available"
-          
-          # Clean up old backups (keep last 5)
-          echo "🧹 Cleaning up old backups..."
-          ls -t $BACKUP_DIR/backup_*.tar.gz | tail -n +6 | xargs -r rm --
-          
-          echo "✅ Deployment completed successfully at $(date)"
-          
+        
     - name: Copy deployment artifact
       uses: appleboy/scp-action@v0.1.4
       with:
@@ -179,7 +149,7 @@ jobs:
         source: "deployment.tar.gz"
         target: "/tmp/"
         
-    - name: Extract and deploy artifact
+    - name: Extract and start application
       uses: appleboy/ssh-action@v1.0.0
       with:
         host: ${{ secrets.LIGHTSAIL_HOST }}
@@ -187,9 +157,43 @@ jobs:
         key: ${{ secrets.LIGHTSAIL_SSH_KEY }}
         port: ${{ secrets.LIGHTSAIL_PORT || '22' }}
         script: |
-          cd /opt/bombers-strapi-cms
-          tar -xzf /tmp/deployment.tar.gz --overwrite
+          set -e
+          
+          APP_DIR="/opt/bombers-strapi-cms"
+          BACKUP_DIR="/opt/backups"
+          
+          cd $APP_DIR
+          
+          # Extract the artifact
+          echo "📥 Extracting deployment artifact..."
+          tar -xzf /tmp/deployment.tar.gz
           rm /tmp/deployment.tar.gz
+          
+          # Install production dependencies
+          echo "📦 Installing dependencies..."
+          npm ci --production --silent
+          
+          # Run database migrations if needed
+          echo "🗃️ Running database migrations..."
+          npm run strapi migration:run || echo "No migrations to run"
+          
+          # Start the application
+          echo "▶️ Starting application..."
+          pm2 start ecosystem.config.js --update-env || pm2 restart strapi-app
+          
+          # Save PM2 configuration
+          pm2 save
+          
+          # Health check
+          echo "🏥 Performing health check..."
+          sleep 10
+          curl -f http://localhost:1337/api/health || curl -f http://localhost:1337/_health || echo "Health check endpoint not available"
+          
+          # Clean up old backups (keep last 5)
+          echo "🧹 Cleaning up old backups..."
+          ls -t $BACKUP_DIR/backup_*.tar.gz 2>/dev/null | tail -n +6 | xargs -r rm --
+          
+          echo "✅ Deployment completed successfully at $(date)"
 
   rollback:
     name: Rollback Deployment
@@ -206,17 +210,30 @@ jobs:
         key: ${{ secrets.LIGHTSAIL_SSH_KEY }}
         port: ${{ secrets.LIGHTSAIL_PORT || '22' }}
         script: |
+          set -e
+          
           echo "🔄 Rolling back deployment..."
           
+          APP_DIR="/opt/bombers-strapi-cms"
           BACKUP_DIR="/opt/backups"
-          LATEST_BACKUP=$(ls -t $BACKUP_DIR/backup_*.tar.gz | head -1)
+          LATEST_BACKUP=$(ls -t $BACKUP_DIR/backup_*.tar.gz 2>/dev/null | head -1)
           
           if [ -f "$LATEST_BACKUP" ]; then
             echo "📦 Restoring from backup: $LATEST_BACKUP"
-            cd /opt/bombers-strapi-cms
+            cd $APP_DIR
+            
+            # Stop the application
             pm2 stop strapi-app || echo "App not running"
-            tar -xzf "$LATEST_BACKUP" --overwrite
-            pm2 start ecosystem.config.js || pm2 restart strapi-app
+            
+            # Restore backup
+            tar -xzf "$LATEST_BACKUP"
+            
+            # Reinstall dependencies
+            npm ci --production --silent
+            
+            # Restart application
+            pm2 start ecosystem.config.js --update-env || pm2 restart strapi-app
+            
             echo "✅ Rollback completed"
           else
             echo "❌ No backup found for rollback"
