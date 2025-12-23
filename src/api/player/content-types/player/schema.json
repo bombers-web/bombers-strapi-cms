@@ -52,19 +52,11 @@
     "date_of_birth": {
       "type": "date"
     },
-    "division": {
-      "type": "enumeration",
-      "required": true,
-      "enum": [
-        "D1",
-        "D2"
-      ]
-    },
     "position": {
       "type": "integer",
       "default": 1,
-      "max": 15,
-      "min": 1
+      "min": 1,
+      "max": 15
     },
     "hoverPic": {
       "type": "media",
@@ -76,7 +68,7 @@
     },
     "slug": {
       "type": "uid",
-      "targetField": "first_name",
+      "targetField": "last_name",
       "required": true
     }
   }

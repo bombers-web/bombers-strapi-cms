@@ -19,23 +19,31 @@
       "type": "string",
       "required": true
     },
-    "position": {
-      "type": "string",
-      "required": true
-    },
     "email": {
       "type": "string",
       "required": true
     },
     "photo": {
+      "type": "media",
+      "multiple": false,
       "allowedTypes": [
         "images",
         "files",
         "videos",
         "audios"
-      ],
-      "type": "media",
-      "multiple": false
+      ]
+    },
+    "position": {
+      "type": "enumeration",
+      "required": true,
+      "enum": [
+        "President",
+        "Vice President",
+        "Director of Operations",
+        "Treasurer",
+        "Secretary",
+        "Marketing/Communications Director"
+      ]
     }
   }
 }

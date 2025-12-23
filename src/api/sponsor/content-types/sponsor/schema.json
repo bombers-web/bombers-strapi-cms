@@ -9,7 +9,7 @@
     "description": ""
   },
   "options": {
-    "draftAndPublish": false
+    "draftAndPublish": true
   },
   "pluginOptions": {},
   "attributes": {
@@ -29,14 +29,14 @@
     },
     "level": {
       "type": "enumeration",
+      "default": "bronze",
       "enum": [
         "platinum",
         "gold",
         "silver",
         "bronze",
         "other"
-      ],
-      "default": "bronze"
+      ]
     },
     "website": {
       "type": "string"
