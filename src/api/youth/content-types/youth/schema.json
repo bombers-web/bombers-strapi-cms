@@ -1,0 +1,39 @@
+{
+  "kind": "collectionType",
+  "collectionName": "youths",
+  "info": {
+    "singularName": "youth",
+    "pluralName": "youths",
+    "displayName": "Youth"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "image": {
+      "type": "media",
+      "multiple": true,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    },
+    "description": {
+      "type": "text",
+      "required": true
+    },
+    "email": {
+      "type": "email"
+    },
+    "website": {
+      "type": "string"
+    }
+  }
+}

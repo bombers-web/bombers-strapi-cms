@@ -16,29 +16,6 @@
     "date": {
       "type": "datetime"
     },
-    "home_score": {
-      "type": "string"
-    },
-    "preview": {
-      "type": "text"
-    },
-    "finished": {
-      "type": "boolean",
-      "default": false
-    },
-    "away_score": {
-      "type": "string"
-    },
-    "division": {
-      "type": "enumeration",
-      "enum": [
-        "d1",
-        "d2"
-      ]
-    },
-    "updates": {
-      "type": "richtext"
-    },
     "home": {
       "type": "relation",
       "relation": "oneToOne",
@@ -49,19 +26,27 @@
       "relation": "oneToOne",
       "target": "api::team.team"
     },
-    "slug": {
-      "type": "uid"
+    "division": {
+      "type": "enumeration",
+      "enum": [
+        "d1",
+        "d2"
+      ]
+    },
+    "home_score": {
+      "type": "string"
+    },
+    "away_score": {
+      "type": "string"
     },
     "winner": {
       "type": "relation",
       "relation": "oneToOne",
       "target": "api::team.team"
     },
-    "location": {
-      "type": "string"
-    },
-    "report": {
-      "type": "text"
+    "finished": {
+      "type": "boolean",
+      "default": false
     },
     "friendly": {
       "type": "boolean"
@@ -74,6 +59,21 @@
         "files",
         "images",
         "videos"
+      ]
+    },
+    "location": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::location.location"
+    },
+    "game_type": {
+      "type": "enumeration",
+      "enum": [
+        "friendly",
+        "championship",
+        "playoff",
+        "league",
+        "sevens"
       ]
     }
   }

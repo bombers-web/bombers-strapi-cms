@@ -1,189 +1,189 @@
-import type { Schema, Attribute } from '@strapi/strapi';
+import type { Schema, Struct } from '@strapi/strapi';
 
-export interface MainSlider extends Schema.Component {
+export interface MainSlider extends Struct.ComponentSchema {
   collectionName: 'components_main_sliders';
   info: {
-    icon: 'th-large';
     displayName: 'Slider';
+    icon: 'th-large';
   };
   attributes: {
-    image: Attribute.Media<'images' | 'files' | 'videos'>;
-    heading: Attribute.String;
-    subheading: Attribute.String;
-    link: Attribute.String;
-    display: Attribute.Boolean;
+    display: Schema.Attribute.Boolean;
+    heading: Schema.Attribute.String;
+    image: Schema.Attribute.Media<'images' | 'files' | 'videos'>;
+    link: Schema.Attribute.String;
+    subheading: Schema.Attribute.String;
   };
 }
 
-export interface SectionsForm extends Schema.Component {
+export interface SectionsForm extends Struct.ComponentSchema {
   collectionName: 'components_sections_forms';
   info: {
-    icon: 'tasks';
     description: '';
     displayName: 'form';
+    icon: 'tasks';
   };
   attributes: {
-    field: Attribute.Component<'shared.field', true>;
-    title: Attribute.String;
-    redirect: Attribute.Boolean;
-    redirectLink: Attribute.String;
-    errorMessage: Attribute.String;
-    successMessage: Attribute.String;
+    errorMessage: Schema.Attribute.String;
+    field: Schema.Attribute.Component<'shared.field', true>;
+    redirect: Schema.Attribute.Boolean;
+    redirectLink: Schema.Attribute.String;
+    successMessage: Schema.Attribute.String;
+    title: Schema.Attribute.String;
   };
 }
 
-export interface SectionsHero extends Schema.Component {
+export interface SectionsHero extends Struct.ComponentSchema {
   collectionName: 'components_decoration_heroes';
   info: {
-    icon: 'address-card';
     description: '';
     displayName: 'Hero';
+    icon: 'address-card';
   };
   attributes: {
-    title: Attribute.String & Attribute.Required;
-    subTitle: Attribute.String;
-    image: Attribute.Media<'images' | 'files' | 'videos'>;
-    size: Attribute.Enumeration<['sm', 'md', 'lg', 'xl', 'full']>;
-    startPic: Attribute.Media<'images' | 'files' | 'videos'>;
-    background: Attribute.Media<'images' | 'files' | 'videos'>;
-    direction: Attribute.Enumeration<['row', 'column']>;
-    contentLink: Attribute.String;
-    backButton: Attribute.Boolean;
-    links: Attribute.Component<'shared.link', true>;
+    backButton: Schema.Attribute.Boolean;
+    background: Schema.Attribute.Media<'images' | 'files' | 'videos'>;
+    contentLink: Schema.Attribute.String;
+    direction: Schema.Attribute.Enumeration<['row', 'column']>;
+    image: Schema.Attribute.Media<'images' | 'files' | 'videos'>;
+    links: Schema.Attribute.Component<'shared.link', true>;
+    size: Schema.Attribute.Enumeration<['sm', 'md', 'lg', 'xl', 'full']>;
+    startPic: Schema.Attribute.Media<'images' | 'files' | 'videos'>;
+    subTitle: Schema.Attribute.String;
+    title: Schema.Attribute.String & Schema.Attribute.Required;
   };
 }
 
-export interface SectionsSection extends Schema.Component {
+export interface SectionsSection extends Struct.ComponentSchema {
   collectionName: 'components_sections_sections';
   info: {
-    icon: 'bars';
     description: '';
     displayName: 'section';
+    icon: 'bars';
   };
   attributes: {
-    title: Attribute.String;
-    subtitle: Attribute.String;
-    content: Attribute.RichText;
-    display: Attribute.Boolean;
-    image: Attribute.Media<'images' | 'files' | 'videos'>;
-    imagePosition: Attribute.String;
-    cards: Attribute.Boolean;
-    links: Attribute.Component<'shared.link', true>;
+    cards: Schema.Attribute.Boolean;
+    content: Schema.Attribute.RichText;
+    display: Schema.Attribute.Boolean;
+    image: Schema.Attribute.Media<'images' | 'files' | 'videos'>;
+    imagePosition: Schema.Attribute.String;
+    links: Schema.Attribute.Component<'shared.link', true>;
+    subtitle: Schema.Attribute.String;
+    title: Schema.Attribute.String;
   };
 }
 
-export interface SharedCard extends Schema.Component {
+export interface SharedCard extends Struct.ComponentSchema {
   collectionName: 'components_shared_cards';
   info: {
-    icon: 'square';
     displayName: 'card';
+    icon: 'square';
   };
   attributes: {
-    cardText: Attribute.String;
-    cardImage: Attribute.Media<'images' | 'files' | 'videos', true>;
-    display: Attribute.Boolean;
+    cardImage: Schema.Attribute.Media<'images' | 'files' | 'videos', true>;
+    cardText: Schema.Attribute.String;
+    display: Schema.Attribute.Boolean;
   };
 }
 
-export interface SharedDynamicContent extends Schema.Component {
+export interface SharedDynamicContent extends Struct.ComponentSchema {
   collectionName: 'components_shared_dynamic_contents';
   info: {
-    icon: 'align-justify';
     displayName: 'dynamic content';
+    icon: 'align-justify';
   };
   attributes: {
-    image: Attribute.Media<'images' | 'files' | 'videos'>;
-    pageCopy: Attribute.RichText;
-    card: Attribute.Component<'shared.card', true>;
+    card: Schema.Attribute.Component<'shared.card', true>;
+    image: Schema.Attribute.Media<'images' | 'files' | 'videos'>;
+    pageCopy: Schema.Attribute.RichText;
   };
 }
 
-export interface SharedField extends Schema.Component {
+export interface SharedField extends Struct.ComponentSchema {
   collectionName: 'components_shared_fields';
   info: {
-    icon: 'stream';
     description: '';
     displayName: 'field';
+    icon: 'stream';
   };
   attributes: {
-    name: Attribute.String & Attribute.Required;
-    type: Attribute.String & Attribute.Required;
-    placeholder: Attribute.String;
-    initialValue: Attribute.String;
+    initialValue: Schema.Attribute.String;
+    name: Schema.Attribute.String & Schema.Attribute.Required;
+    placeholder: Schema.Attribute.String;
+    type: Schema.Attribute.String & Schema.Attribute.Required;
   };
 }
 
-export interface SharedImage extends Schema.Component {
+export interface SharedImage extends Struct.ComponentSchema {
   collectionName: 'components_shared_images';
   info: {
-    icon: 'file-image';
     displayName: 'image';
+    icon: 'file-image';
   };
   attributes: {
-    image: Attribute.Media<'images' | 'files' | 'videos', true>;
+    image: Schema.Attribute.Media<'images' | 'files' | 'videos', true>;
   };
 }
 
-export interface SharedLink extends Schema.Component {
+export interface SharedLink extends Struct.ComponentSchema {
   collectionName: 'components_shared_links';
   info: {
-    icon: 'arrow-alt-circle-right';
     displayName: 'link';
+    icon: 'arrow-alt-circle-right';
   };
   attributes: {
-    display: Attribute.String;
-    url: Attribute.String;
-    card: Attribute.Boolean;
+    card: Schema.Attribute.Boolean;
+    display: Schema.Attribute.String;
+    url: Schema.Attribute.String;
   };
 }
 
-export interface SharedMeta extends Schema.Component {
+export interface SharedMeta extends Struct.ComponentSchema {
   collectionName: 'components_shared_metas';
   info: {
-    icon: 'ankh';
     displayName: 'meta';
+    icon: 'ankh';
   };
   attributes: {
-    name: Attribute.String;
-    content: Attribute.String;
-    preventIndexing: Attribute.Boolean;
-    display: Attribute.Boolean;
-    data: Attribute.JSON;
-    metaImage: Attribute.Media<'images' | 'files' | 'videos'>;
+    content: Schema.Attribute.String;
+    data: Schema.Attribute.JSON;
+    display: Schema.Attribute.Boolean;
+    metaImage: Schema.Attribute.Media<'images' | 'files' | 'videos'>;
+    name: Schema.Attribute.String;
+    preventIndexing: Schema.Attribute.Boolean;
   };
 }
 
-export interface SharedSeo extends Schema.Component {
+export interface SharedSeo extends Struct.ComponentSchema {
   collectionName: 'components_shared_seos';
   info: {
-    icon: 'allergies';
     description: '';
     displayName: 'Seo';
+    icon: 'allergies';
   };
   attributes: {
-    metaTitle: Attribute.String & Attribute.Required;
-    metaDescription: Attribute.Text & Attribute.Required;
-    shareImage: Attribute.Media<'images'>;
-    meta: Attribute.Component<'shared.meta', true>;
+    meta: Schema.Attribute.Component<'shared.meta', true>;
+    metaDescription: Schema.Attribute.Text & Schema.Attribute.Required;
+    metaTitle: Schema.Attribute.String & Schema.Attribute.Required;
+    shareImage: Schema.Attribute.Media<'images'>;
   };
 }
 
-export interface SharedSubMenus extends Schema.Component {
+export interface SharedSubMenus extends Struct.ComponentSchema {
   collectionName: 'components_shared_sub_menus';
   info: {
-    icon: 'angle-right';
     displayName: 'subMenus';
+    icon: 'angle-right';
   };
   attributes: {
-    itemId: Attribute.String;
-    displayName: Attribute.String;
-    slug: Attribute.String;
+    displayName: Schema.Attribute.String;
+    itemId: Schema.Attribute.String;
+    slug: Schema.Attribute.String;
   };
 }
 
-declare module '@strapi/types' {
-  export module Shared {
-    export interface Components {
+declare module '@strapi/strapi' {
+  export module Public {
+    export interface ComponentSchemas {
       'main.slider': MainSlider;
       'sections.form': SectionsForm;
       'sections.hero': SectionsHero;
