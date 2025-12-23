@@ -143,7 +143,7 @@ jobs:
           
           # Stop the application gracefully
           echo "⏹️ Stopping application..."
-          pm2 stop strapi-production || echo "App not running with PM2"
+          pm2 stop strapi-app || echo "App not running with PM2"
         
     - name: Copy deployment artifact
       uses: appleboy/scp-action@v0.1.4
@@ -185,7 +185,7 @@ jobs:
           
           # Start the application
           echo "▶️ Starting application..."
-          pm2 start ecosystem.config.js --update-env || pm2 restart strapi-production
+          pm2 start ecosystem.config.js --update-env || pm2 restart strapi-app
           
           # Save PM2 configuration
           pm2 save
@@ -229,7 +229,7 @@ jobs:
             cd $APP_DIR
             
             # Stop the application
-            pm2 stop strapi-production || echo "App not running"
+            pm2 stop strapi-app || echo "App not running"
             
             # Restore backup
             tar -xzf "$LATEST_BACKUP"
@@ -238,7 +238,7 @@ jobs:
             npm ci --production --silent
             
             # Restart application
-            pm2 start ecosystem.config.js --update-env || pm2 restart strapi-production
+            pm2 start ecosystem.config.js --update-env || pm2 restart strapi-app
             
             echo "✅ Rollback completed"
           else

@@ -5,6 +5,7 @@ module.exports = {
         cwd: '.',
         script: 'npm',
         args: 'run start',
+        interpreter: '/home/ubuntu/.nvm/versions/node/v20.19.6/bin/node',
         env: {
           NODE_ENV: 'production'
         },
@@ -12,36 +13,14 @@ module.exports = {
         error: './logs/production.err.log',
         log_date_format: 'YYYY-MM-DD HH:mm:ss',
         max_memory_restart: '800M',
-        max_restarts: 10, // Maximum number of restarts
-        min_uptime: '5s', // Minimum uptime to consider app as running
-        restart_delay: 4000, // Time to wait before restarting
+        max_restarts: 10,
+        min_uptime: '5s',
+        restart_delay: 4000,
         kill_timeout: 3000,
-        exec_mode: 'fork', // Recommended for Strapi
+        exec_mode: 'fork',
         instances: 1,
         autorestart: true,
-        watch: false, // Disable file watching in production
+        watch: false,
       },
-      // {
-      //   name: 'strapi-development',
-      //   cwd: '.', // Assuming your package.json is in the root
-      //   script: 'npm',
-      //   args: 'run develop',
-      //   env: {
-      //     NODE_ENV: 'development',
-      //     PORT: 1337
-      //   },
-      //   output: './logs/development.out.log',
-      //   error: './logs/development.err.log',
-      //   log_date_format: 'YYYY-MM-DD HH:mm:ss',
-      //   kill_timeout: 3000,
-      //   max_memory_restart: '1G', // Restart if memory exceeds 1GB
-      //   max_restarts: 10, // Maximum number of restarts
-      //   min_uptime: '5s', // Minimum uptime to consider app as running
-      //   restart_delay: 4000, // Time to wait before restarting
-      //   exec_mode: 'fork', // Recommended for Strapi
-      //   instances: 1,
-      //   autorestart: false,
-      //   watch: false, // Consider enabling for development if needed, but be mindful of performance
-      // },
     ],
   };

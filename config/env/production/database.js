@@ -1,6 +1,5 @@
 const parse = require("pg-connection-string").parse;
 const path = require("path");
-const { settings } = require("../../../v3/config/middleware");
 const config = parse(process.env.DATABASE_URL);
 
 module.exports = ({ env }) => ({
