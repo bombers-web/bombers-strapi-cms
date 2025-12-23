@@ -2,7 +2,7 @@ module.exports = {
     apps: [
       {
         name: 'strapi-app',
-        cwd: '.', // Assuming your package.json is in the root
+        cwd: '.',
         script: 'npm',
         args: 'run start',
         env: {
@@ -11,7 +11,7 @@ module.exports = {
         output: './logs/production.out.log',
         error: './logs/production.err.log',
         log_date_format: 'YYYY-MM-DD HH:mm:ss',
-        max_memory_restart: '1G', // Restart if memory exceeds 1GB
+        max_memory_restart: '800M',
         max_restarts: 10, // Maximum number of restarts
         min_uptime: '5s', // Minimum uptime to consider app as running
         restart_delay: 4000, // Time to wait before restarting
