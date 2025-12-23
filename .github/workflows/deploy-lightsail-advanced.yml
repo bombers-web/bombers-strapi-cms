@@ -126,23 +126,23 @@ jobs:
           BACKUP_DIR="/opt/backups"
           TIMESTAMP=$(date +%Y%m%d_%H%M%S)
           
-          echo "🚀 Starting deployment at $(date)"
+          echo "Starting deployment at $(date)"
           
           # Create backup directory if it doesn't exist
           mkdir -p $BACKUP_DIR
           
           # Create backup of current deployment
           if [ -d "$APP_DIR" ]; then
-            echo "📦 Creating backup..."
+            echo "Creating backup..."
             tar -czf "$BACKUP_DIR/backup_$TIMESTAMP.tar.gz" -C "$APP_DIR" .
-            echo "✅ Backup created: backup_$TIMESTAMP.tar.gz"
+            echo "Backup created: backup_$TIMESTAMP.tar.gz"
           fi
           
           # Create app directory if it doesn't exist
           mkdir -p $APP_DIR
           
           # Stop the application gracefully
-          echo "⏹️ Stopping application..."
+          echo "Stopping application..."
           pm2 stop strapi-app || echo "App not running with PM2"
         
     - name: Copy deployment artifact
@@ -171,35 +171,35 @@ jobs:
           cd $APP_DIR
           
           # Extract the artifact
-          echo "📥 Extracting deployment artifact..."
+          echo "Extracting deployment artifact..."
           tar -xzf /tmp/deployment.tar.gz
           rm /tmp/deployment.tar.gz
           
           # Install production dependencies
-          echo "📦 Installing dependencies..."
-          npm ci --production --silent
+          echo "Installing dependencies..."
+          npm ci --production
           
           # Run database migrations if needed
-          echo "🗃️ Running database migrations..."
+          echo "Running database migrations..."
           npm run strapi migration:run || echo "No migrations to run"
           
           # Start the application
-          echo "▶️ Starting application..."
+          echo "Starting application..."
           pm2 start ecosystem.config.js --update-env || pm2 restart strapi-app
           
           # Save PM2 configuration
           pm2 save
           
           # Health check
-          echo "🏥 Performing health check..."
+          echo "Performing health check..."
           sleep 10
           curl -f http://localhost:1337/api/health || curl -f http://localhost:1337/_health || echo "Health check endpoint not available"
           
           # Clean up old backups (keep last 5)
-          echo "🧹 Cleaning up old backups..."
+          echo "Cleaning up old backups..."
           ls -t $BACKUP_DIR/backup_*.tar.gz 2>/dev/null | tail -n +6 | xargs -r rm --
           
-          echo "✅ Deployment completed successfully at $(date)"
+          echo "Deployment completed successfully at $(date)"
 
   rollback:
     name: Rollback Deployment
@@ -218,14 +218,14 @@ jobs:
         script: |
           set -e
           
-          echo "🔄 Rolling back deployment..."
+          echo "Rolling back deployment..."
           
           APP_DIR="/opt/bombers-strapi-cms"
           BACKUP_DIR="/opt/backups"
           LATEST_BACKUP=$(ls -t $BACKUP_DIR/backup_*.tar.gz 2>/dev/null | head -1)
           
           if [ -f "$LATEST_BACKUP" ]; then
-            echo "📦 Restoring from backup: $LATEST_BACKUP"
+            echo "Restoring from backup: $LATEST_BACKUP"
             cd $APP_DIR
             
             # Stop the application
@@ -240,8 +240,8 @@ jobs:
             # Restart application
             pm2 start ecosystem.config.js --update-env || pm2 restart strapi-app
             
-            echo "✅ Rollback completed"
+            echo "Rollback completed"
           else
-            echo "❌ No backup found for rollback"
+            echo "No backup found for rollback"
             exit 1
           fi

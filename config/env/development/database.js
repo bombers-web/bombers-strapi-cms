@@ -28,7 +28,7 @@ module.exports = ({ env }) => {
 };
 
 function getSqliteConfig() {
-  console.log('📁 Falling back to SQLite configuration');
+  console.log('Falling back to SQLite configuration');
   return {
     connection: {
       client: 'sqlite',
