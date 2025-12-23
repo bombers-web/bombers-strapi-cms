@@ -76,8 +76,7 @@ jobs:
         
     - name: Create Archive
       run: |
-        tar -czf deployment.tar.gz \
-          --exclude=deployment.tar.gz \
+        tar -czf ../deployment.tar.gz \
           --exclude=node_modules \
           --exclude=.git \
           .
