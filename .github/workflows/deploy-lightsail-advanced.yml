@@ -9,46 +9,31 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
 
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
-
-      - name: Build Application
+      - name: Install and Build
         run: |
-          npm ci
-          npm run build
-        env:
-          NODE_ENV: production
-          DATABASE_URL: postgres://dummy:dummy@127.0.0.1:5432/dummy
-          APP_KEYS: ${{ secrets.APP_KEYS || 'temp_key' }}
-          API_TOKEN_SALT: ${{ secrets.API_TOKEN_SALT || 'temp_salt' }}
-          ADMIN_JWT_SECRET: ${{ secrets.ADMIN_JWT_SECRET || 'temp_secret' }}
-          JWT_SECRET: ${{ secrets.JWT_SECRET || 'temp_secret' }}
+          npm install
+          # We pass dummy values just to satisfy the build
+          NODE_ENV=production ADMIN_JWT_SECRET=temp API_TOKEN_SALT=temp APP_KEYS=temp,temp JWT_SECRET=temp npm run build
 
-      - name: Upload Files via SCP
-        uses: appleboy/scp-action@v0.1.7
+      - name: Deploy files to Lightsail
+        uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.LIGHTSAIL_HOST }}
           username: ${{ secrets.LIGHTSAIL_USERNAME }}
           key: ${{ secrets.LIGHTSAIL_SSH_KEY }}
-          port: 22
-          source: "./*"
-          target: "/opt/bombers-strapi-cms/"
-          # This ensures we don't upload unnecessary junk
-          rm: false 
+          source: "."
+          target: "~/strapi-app"
 
-      - name: Restart Strapi
-        uses: appleboy/ssh-action@v1.0.3
+      - name: Restart PM2
+        uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.LIGHTSAIL_HOST }}
           username: ${{ secrets.LIGHTSAIL_USERNAME }}
           key: ${{ secrets.LIGHTSAIL_SSH_KEY }}
-          port: 22
+          envs: ADMIN_JWT_SECRET,API_TOKEN_SALT,APP_KEYS,DATABASE_URL,JWT_SECRET
           script: |
-            cd /opt/bombers-strapi-cms
-            npm install --omit=dev --silent
-            pm2 restart strapi-app || pm2 start ecosystem.config.js
+            cd ~/strapi-app
+            # No npm run build here! It's already done.
+            pm2 restart ecosystem.config.js --update-env || pm2 start ecosystem.config.js
