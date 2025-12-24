@@ -155,23 +155,33 @@ jobs:
           set -e
           APP_DIR="/opt/bombers-strapi-cms"
           
+          # Move to the directory
           cd $APP_DIR
           
+          echo "Current directory: $(pwd)"
+          
+          # Clean old files
           echo "Cleaning old files..."
-          rm -rf dist build src
+          rm -rf dist build src node_modules
           
-          echo "Extracting deployment artifact..."
+          # Extract the artifact
+          echo "Extracting artifact..."
           tar -xzf /tmp/deployment.tar.gz
-          rm /tmp/deployment.tar.gz
           
-          echo "Installing production dependencies..."
-          npm ci --production
+          # Check if package.json exists before installing
+          if [ -f "package.json" ]; then
+            echo "Installing production dependencies..."
+            npm ci --production --loglevel info
+          else
+            echo "Error: package.json not found in $(pwd)"
+            exit 1
+          fi
           
-          echo "Starting application..."
-          pm2 start ecosystem.config.js --update-env || pm2 restart strapi-app
+          # Rebuild sharp for this specific server hardware
+          npm rebuild sharp
           
-          pm2 save
-          echo "Deployment completed successfully."
+          echo "Restarting PM2..."
+          pm2 restart ecosystem.config.js --update-env || pm2 start ecosystem.config.js
 
   rollback:
     name: Rollback on Failure
