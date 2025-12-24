@@ -23,6 +23,12 @@ jobs:
           npm run build
         env:
           NODE_ENV: production
+          DATABASE_CLIENT: postgres
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          APP_KEYS: ${{ secrets.APP_KEYS }}
+          API_TOKEN_SALT: ${{ secrets.API_TOKEN_SALT }}
+          ADMIN_JWT_SECRET: ${{ secrets.ADMIN_JWT_SECRET }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }} 
 
       - name: Transfer Files to Release Folder
         uses: appleboy/scp-action@v0.1.4
