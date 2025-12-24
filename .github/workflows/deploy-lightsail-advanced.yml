@@ -1,4 +1,4 @@
-name: Deploy Strapi to Lightsail
+name: Deploy Strapi
 
 on:
   push:
@@ -23,29 +23,31 @@ jobs:
           npm run build
         env:
           NODE_ENV: production
-          # Dummy vars to prevent the "charAt" build error
-          DATABASE_URL: ${{ secrets.DATABASE_URL || 'postgres://dummy:dummy@127.0.0.1:5432/dummy' }}
+          DATABASE_URL: postgres://dummy:dummy@127.0.0.1:5432/dummy
           APP_KEYS: ${{ secrets.APP_KEYS || 'temp_key' }}
           API_TOKEN_SALT: ${{ secrets.API_TOKEN_SALT || 'temp_salt' }}
           ADMIN_JWT_SECRET: ${{ secrets.ADMIN_JWT_SECRET || 'temp_secret' }}
           JWT_SECRET: ${{ secrets.JWT_SECRET || 'temp_secret' }}
 
-      - name: Sync Files to Server
-        uses: Burnett01/rsync-deployments@5.2.1
-        with:
-          switches: -avzr --delete
-          path: ./
-          remote_path: "/opt/bombers-strapi-cms/"
-          remote_host: ${{ secrets.LIGHTSAIL_HOST }}
-          remote_user: ${{ secrets.LIGHTSAIL_USERNAME }}
-          remote_key: ${{ secrets.LIGHTSAIL_SSH_KEY }}
-
-      - name: Restart Strapi
-        uses: appleboy/ssh-action@v1.0.0
+      - name: Upload Files via SCP
+        uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.LIGHTSAIL_HOST }}
           username: ${{ secrets.LIGHTSAIL_USERNAME }}
           key: ${{ secrets.LIGHTSAIL_SSH_KEY }}
+          port: 22
+          source: "./*"
+          target: "/opt/bombers-strapi-cms/"
+          # This ensures we don't upload unnecessary junk
+          rm: false 
+
+      - name: Restart Strapi
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.LIGHTSAIL_HOST }}
+          username: ${{ secrets.LIGHTSAIL_USERNAME }}
+          key: ${{ secrets.LIGHTSAIL_SSH_KEY }}
+          port: 22
           script: |
             cd /opt/bombers-strapi-cms
             npm install --omit=dev --silent
