@@ -3,242 +3,91 @@ name: Deploy to AWS Lightsail
 on:
   push:
     branches: [ main ]
-  pull_request:
-    branches: [ main ]
-    types: [ closed ]
-  workflow_dispatch:
-    inputs:
-      environment:
-        description: 'Environment to deploy to'
-        required: true
-        default: 'production'
-        type: choice
-        options:
-          - production
-          - staging
 
-env:
-  NODE_VERSION: '20'
-  
 jobs:
-  test:
-    name: Run Tests
-    runs-on: ubuntu-latest
-    
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-      
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: ${{ env.NODE_VERSION }}
-        cache: 'npm'
-        
-    - name: Install dependencies
-      run: npm ci
-      
-    - name: Run linting
-      run: npm run lint --if-present
-      
-    - name: Run tests
-      run: npm test --if-present
-
-  build:
-    name: Build Application
-    runs-on: ubuntu-latest
-    needs: test
-    if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.pull_request.merged == true)
-    
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-      
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: ${{ env.NODE_VERSION }}
-        cache: 'npm'
-        
-    - name: Install dependencies
-      run: npm ci
-      
-    - name: Build application
-      run: npm run build
-      env:
-        NODE_ENV: production
-        DATABASE_CLIENT: sqlite
-        DATABASE_URL: postgres://dummy:dummy@localhost:5432/dummy 
-        APP_KEYS: ${{ secrets.APP_KEYS }}
-        API_TOKEN_SALT: ${{ secrets.API_TOKEN_SALT }}
-        ADMIN_JWT_SECRET: ${{ secrets.ADMIN_JWT_SECRET }}
-        JWT_SECRET: ${{ secrets.JWT_SECRET }}
-        
-    - name: Upload Build Artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: deployment-artifact
-        path: |
-          build/
-          config/
-          database/
-          public/
-          src/
-          package.json
-          package-lock.json
-          ecosystem.config.js
-          !node_modules/.cache
-        if-no-files-found: error
-
   deploy:
-    name: Deploy to Lightsail
     runs-on: ubuntu-latest
-    needs: [test, build]
-    if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.pull_request.merged == true)
-    environment: 
-      name: ${{ github.event.inputs.environment || 'production' }}
-      url: https://strapi.stlouisbombers.com
-    
     steps:
-    - name: Download artifact
-      uses: actions/download-artifact@v4
-      with:
-        name: deployment-artifact
-        path: ./deployment
-        
-    - name: Create deployment archive
-      run: |
-        cd deployment
-        tar -czf ../deployment.tar.gz .
-        cd ..
-        ls -lh deployment.tar.gz
-        
-    - name: Create backup on server
-      uses: appleboy/ssh-action@v1.0.0
-      with:
-        host: ${{ secrets.LIGHTSAIL_HOST }}
-        username: ${{ secrets.LIGHTSAIL_USERNAME }}
-        key: ${{ secrets.LIGHTSAIL_SSH_KEY }}
-        port: ${{ secrets.LIGHTSAIL_PORT || '22' }}
-        script: |
-          set -e
-          
-          APP_DIR="/opt/bombers-strapi-cms"
-          BACKUP_DIR="/opt/backups"
-          TIMESTAMP=$(date +%Y%m%d_%H%M%S)
-          
-          echo "Starting deployment at $(date)"
-          
-          # Create backup directory if it doesn't exist
-          mkdir -p $BACKUP_DIR
-          
-          # Create backup of current deployment
-          if [ -d "$APP_DIR" ]; then
-            echo "Creating backup..."
-            tar -czf "$BACKUP_DIR/backup_$TIMESTAMP.tar.gz" -C "$APP_DIR" .
-            echo "Backup created: backup_$TIMESTAMP.tar.gz"
-          fi
-          
-          # Create app directory if it doesn't exist
-          mkdir -p $APP_DIR
-          
-          # Stop the application gracefully
-          echo "Stopping application..."
-          pm2 stop strapi-app || echo "App not running with PM2"
-        
-    - name: Copy deployment artifact
-      uses: appleboy/scp-action@v0.1.4
-      with:
-        host: ${{ secrets.LIGHTSAIL_HOST }}
-        username: ${{ secrets.LIGHTSAIL_USERNAME }}
-        key: ${{ secrets.LIGHTSAIL_SSH_KEY }}
-        port: ${{ secrets.LIGHTSAIL_PORT || '22' }}
-        source: "deployment.tar.gz"
-        target: "/tmp/"
-        
-    - name: Extract and start application
-      uses: appleboy/ssh-action@v1.0.0
-      with:
-        host: ${{ secrets.LIGHTSAIL_HOST }}
-        username: ${{ secrets.LIGHTSAIL_USERNAME }}
-        key: ${{ secrets.LIGHTSAIL_SSH_KEY }}
-        port: ${{ secrets.LIGHTSAIL_PORT || '22' }}
-        script: |
-          set -e
-          
-          APP_DIR="/opt/bombers-strapi-cms"
-          BACKUP_DIR="/opt/backups"
-          
-          cd $APP_DIR
-          
-          # Extract the artifact
-          echo "Extracting deployment artifact..."
-          tar -xzf /tmp/deployment.tar.gz
-          rm /tmp/deployment.tar.gz
-          
-          # Run database migrations if needed
-          echo "Running database migrations..."
-          npm run strapi migration:run || echo "No migrations to run"
-          
-          # Start the application
-          echo "Starting application..."
-          pm2 start ecosystem.config.js --update-env || pm2 restart strapi-app
-          
-          # Save PM2 configuration
-          pm2 save
-          
-          # Health check
-          echo "Performing health check..."
-          sleep 10
-          curl -f http://localhost:1337/api/health || curl -f http://localhost:1337/_health || echo "Health check endpoint not available"
-          
-          # Clean up old backups (keep last 5)
-          echo "Cleaning up old backups..."
-          ls -t $BACKUP_DIR/backup_*.tar.gz 2>/dev/null | tail -n +6 | xargs -r rm --
-          
-          echo "Deployment completed successfully at $(date)"
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-  rollback:
-    name: Rollback Deployment
-    runs-on: ubuntu-latest
-    needs: deploy
-    if: failure()
-    
-    steps:
-    - name: Rollback to previous version
-      uses: appleboy/ssh-action@v1.0.0
-      with:
-        host: ${{ secrets.LIGHTSAIL_HOST }}
-        username: ${{ secrets.LIGHTSAIL_USERNAME }}
-        key: ${{ secrets.LIGHTSAIL_SSH_KEY }}
-        port: ${{ secrets.LIGHTSAIL_PORT || '22' }}
-        script: |
-          set -e
-          
-          echo "Rolling back deployment..."
-          
-          APP_DIR="/opt/bombers-strapi-cms"
-          BACKUP_DIR="/opt/backups"
-          LATEST_BACKUP=$(ls -t $BACKUP_DIR/backup_*.tar.gz 2>/dev/null | head -1)
-          
-          if [ -f "$LATEST_BACKUP" ]; then
-            echo "Restoring from backup: $LATEST_BACKUP"
-            cd $APP_DIR
+      - name: Setup Node & Build
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      
+      - name: Build Application
+        run: |
+          npm ci
+          npm run build
+        env:
+          NODE_ENV: production
+
+      - name: Transfer Files to Release Folder
+        uses: appleboy/scp-action@v0.1.4
+        with:
+          host: ${{ secrets.LIGHTSAIL_HOST }}
+          username: ${{ secrets.LIGHTSAIL_USERNAME }}
+          key: ${{ secrets.LIGHTSAIL_SSH_KEY }}
+          source: "./"
+          # Deploys to a unique folder per commit
+          target: "/opt/strapi/releases/${{ github.sha }}"
+
+      - name: Activate & Health Check
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.LIGHTSAIL_HOST }}
+          username: ${{ secrets.LIGHTSAIL_USERNAME }}
+          key: ${{ secrets.LIGHTSAIL_SSH_KEY }}
+          script: |
+            set -e
+            export NODE_ENV=production
+            BASE_DIR="/opt/strapi"
+            RELEASE_DIR="$BASE_DIR/releases/${{ github.sha }}"
+            CURRENT_DIR="/opt/bombers-strapi-cms" # This is your live symlink
             
-            # Stop the application
-            pm2 stop strapi-app || echo "App not running"
+            # 1. Prepare the new release
+            cd $RELEASE_DIR
+            npm install --omit=dev --silent
             
-            # Restore backup
-            tar -xzf "$LATEST_BACKUP"
+            # 2. Swap the symlink (The Atomic Switch)
+            ln -sfn $RELEASE_DIR $CURRENT_DIR
             
-            # Reinstall dependencies
-            npm ci --production --silent
+            # 3. Restart App
+            pm2 restart strapi-app || pm2 start ecosystem.config.js
             
-            # Restart application
-            pm2 start ecosystem.config.js --update-env || pm2 restart strapi-app
+            # 4. Health Check
+            echo "Checking health..."
+            sleep 10
+            if ! curl -s --fail http://localhost:1337/_health; then
+              echo "Health check failed! Rolling back..."
+              exit 1
+            fi
             
-            echo "Rollback completed"
-          else
-            echo "No backup found for rollback"
-            exit 1
-          fi
+            # 5. Cleanup: Keep only last 3 releases
+            cd $BASE_DIR/releases && ls -t | tail -n +4 | xargs rm -rf --
+
+      - name: Rollback on Failure
+        if: failure()
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.LIGHTSAIL_HOST }}
+          username: ${{ secrets.LIGHTSAIL_USERNAME }}
+          key: ${{ secrets.LIGHTSAIL_SSH_KEY }}
+          script: |
+            BASE_DIR="/opt/strapi"
+            CURRENT_DIR="/opt/bombers-strapi-cms"
+            
+            # Find the previous successful release (second most recent)
+            PREVIOUS_RELEASE=$(ls -dt $BASE_DIR/releases/* | sed -n '2p')
+            
+            if [ -n "$PREVIOUS_RELEASE" ]; then
+              echo "Pointing symlink back to $PREVIOUS_RELEASE"
+              ln -sfn $PREVIOUS_RELEASE $CURRENT_DIR
+              pm2 restart strapi-app
+              echo "Rollback successful."
+            else
+              echo "No previous release found to rollback to."
+              exit 1
+            fi
