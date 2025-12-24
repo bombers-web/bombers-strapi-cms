@@ -67,6 +67,7 @@ jobs:
       run: npm run build
       env:
         NODE_ENV: production
+        STRAPI_ADMIN_BACKEND_URL: https://strapi.stlouisbombers.com
         DATABASE_URL: ${{ secrets.DATABASE_URL }}
         APP_KEYS: ${{ secrets.APP_KEYS }}
         API_TOKEN_SALT: ${{ secrets.API_TOKEN_SALT }}
