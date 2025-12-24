@@ -87,6 +87,7 @@ jobs:
           package.json
           package-lock.json
           ecosystem.config.js
+          !node_modules/.cache
         if-no-files-found: error
 
   deploy:
@@ -174,10 +175,6 @@ jobs:
           echo "Extracting deployment artifact..."
           tar -xzf /tmp/deployment.tar.gz
           rm /tmp/deployment.tar.gz
-          
-          # Install production dependencies
-          echo "Installing dependencies..."
-          npm ci --production
           
           # Run database migrations if needed
           echo "Running database migrations..."
