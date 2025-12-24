@@ -1,99 +1,52 @@
-name: Deploy to AWS Lightsail
+name: Deploy Strapi to Lightsail
 
 on:
   push:
     branches: [ main ]
 
 jobs:
-  deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup Node & Build
+      - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'npm'
-      
+
       - name: Build Application
         run: |
           npm ci
           npm run build
         env:
           NODE_ENV: production
-          DATABASE_CLIENT: postgres
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          APP_KEYS: ${{ secrets.APP_KEYS }}
-          API_TOKEN_SALT: ${{ secrets.API_TOKEN_SALT }}
-          ADMIN_JWT_SECRET: ${{ secrets.ADMIN_JWT_SECRET }}
-          JWT_SECRET: ${{ secrets.JWT_SECRET }} 
+          # Dummy vars to prevent the "charAt" build error
+          DATABASE_URL: ${{ secrets.DATABASE_URL || 'postgres://dummy:dummy@127.0.0.1:5432/dummy' }}
+          APP_KEYS: ${{ secrets.APP_KEYS || 'temp_key' }}
+          API_TOKEN_SALT: ${{ secrets.API_TOKEN_SALT || 'temp_salt' }}
+          ADMIN_JWT_SECRET: ${{ secrets.ADMIN_JWT_SECRET || 'temp_secret' }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET || 'temp_secret' }}
 
-      - name: Transfer Files to Release Folder
-        uses: appleboy/scp-action@v0.1.4
+      - name: Sync Files to Server
+        uses: Burnett01/rsync-deployments@5.2.1
         with:
-          host: ${{ secrets.LIGHTSAIL_HOST }}
-          username: ${{ secrets.LIGHTSAIL_USERNAME }}
-          key: ${{ secrets.LIGHTSAIL_SSH_KEY }}
-          source: "./"
-          # Deploys to a unique folder per commit
-          target: "/opt/strapi/releases/${{ github.sha }}"
+          switches: -avzr --delete
+          path: ./
+          remote_path: "/opt/bombers-strapi-cms/"
+          remote_host: ${{ secrets.LIGHTSAIL_HOST }}
+          remote_user: ${{ secrets.LIGHTSAIL_USERNAME }}
+          remote_key: ${{ secrets.LIGHTSAIL_SSH_KEY }}
 
-      - name: Activate & Health Check
+      - name: Restart Strapi
         uses: appleboy/ssh-action@v1.0.0
         with:
           host: ${{ secrets.LIGHTSAIL_HOST }}
           username: ${{ secrets.LIGHTSAIL_USERNAME }}
           key: ${{ secrets.LIGHTSAIL_SSH_KEY }}
           script: |
-            set -e
-            export NODE_ENV=production
-            BASE_DIR="/opt/strapi"
-            RELEASE_DIR="$BASE_DIR/releases/${{ github.sha }}"
-            CURRENT_DIR="/opt/bombers-strapi-cms" # This is your live symlink
-            
-            # 1. Prepare the new release
-            cd $RELEASE_DIR
+            cd /opt/bombers-strapi-cms
             npm install --omit=dev --silent
-            
-            # 2. Swap the symlink (The Atomic Switch)
-            ln -sfn $RELEASE_DIR $CURRENT_DIR
-            
-            # 3. Restart App
             pm2 restart strapi-app || pm2 start ecosystem.config.js
-            
-            # 4. Health Check
-            echo "Checking health..."
-            sleep 10
-            if ! curl -s --fail http://localhost:1337/_health; then
-              echo "Health check failed! Rolling back..."
-              exit 1
-            fi
-            
-            # 5. Cleanup: Keep only last 3 releases
-            cd $BASE_DIR/releases && ls -t | tail -n +4 | xargs rm -rf --
-
-      - name: Rollback on Failure
-        if: failure()
-        uses: appleboy/ssh-action@v1.0.0
-        with:
-          host: ${{ secrets.LIGHTSAIL_HOST }}
-          username: ${{ secrets.LIGHTSAIL_USERNAME }}
-          key: ${{ secrets.LIGHTSAIL_SSH_KEY }}
-          script: |
-            BASE_DIR="/opt/strapi"
-            CURRENT_DIR="/opt/bombers-strapi-cms"
-            
-            # Find the previous successful release (second most recent)
-            PREVIOUS_RELEASE=$(ls -dt $BASE_DIR/releases/* | sed -n '2p')
-            
-            if [ -n "$PREVIOUS_RELEASE" ]; then
-              echo "Pointing symlink back to $PREVIOUS_RELEASE"
-              ln -sfn $PREVIOUS_RELEASE $CURRENT_DIR
-              pm2 restart strapi-app
-              echo "Rollback successful."
-            else
-              echo "No previous release found to rollback to."
-              exit 1
-            fi
