@@ -12,10 +12,17 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Install and Build
+        env:
+          ADMIN_JWT_SECRET: ${{ secrets.ADMIN_JWT_SECRET }}
+          API_TOKEN_SALT: ${{ secrets.API_TOKEN_SALT }}
+          APP_KEYS: ${{ secrets.APP_KEYS }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          NODE_ENV: production
         run: |
           npm install
-          # We pass dummy values just to satisfy the build
-          NODE_ENV=production ADMIN_JWT_SECRET=temp API_TOKEN_SALT=temp APP_KEYS=temp,temp JWT_SECRET=temp npm run build
+          # Now 'npm run build' can see all the variables above
+          npm run build
 
       - name: Deploy files to Lightsail
         uses: appleboy/scp-action@master
