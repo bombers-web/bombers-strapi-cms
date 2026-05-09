@@ -82,6 +82,7 @@ jobs:
             # Extract new files
             tar -xzf ~/deploy.tar.gz
             rm ~/deploy.tar.gz
+            mkdir -p logs
             
             # Helper function to restore backup and reinstall deps
             rollback() {
@@ -98,9 +99,7 @@ jobs:
             fi
 
             # Restart the application using PM2
-            if ! pm2 restart strapi-production; then
-              pm2 start npm --name "strapi-production" --max-memory-restart 512M -- start
-            fi
+            pm2 startOrRestart ecosystem.config.js
 
             # Health check
             sleep 30
