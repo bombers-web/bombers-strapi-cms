@@ -654,11 +654,11 @@ export interface ApiGameGame extends Struct.CollectionTypeSchema {
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     date: Schema.Attribute.DateTime;
-    division: Schema.Attribute.Enumeration<['d1', 'd2']>;
+    division: Schema.Attribute.Enumeration<['d1', 'd2', 'sevens']> &
+      Schema.Attribute.Required;
     finished: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
-    friendly: Schema.Attribute.Boolean;
     game_type: Schema.Attribute.Enumeration<
-      ['friendly', 'championship', 'playoff', 'league', 'sevens']
+      ['friendly', 'championship', 'playoff', 'league', 'pool', 'sevens']
     >;
     home: Schema.Attribute.Relation<'oneToOne', 'api::team.team'>;
     home_score: Schema.Attribute.String;
@@ -668,6 +668,10 @@ export interface ApiGameGame extends Struct.CollectionTypeSchema {
       Schema.Attribute.Private;
     location: Schema.Attribute.Relation<'oneToOne', 'api::location.location'>;
     publishedAt: Schema.Attribute.DateTime;
+    tournament: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::tournament.tournament'
+    >;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -1013,6 +1017,38 @@ export interface ApiTeamTeam extends Struct.CollectionTypeSchema {
       Schema.Attribute.Private;
     location: Schema.Attribute.String;
     logo: Schema.Attribute.Media<'images' | 'files' | 'videos'>;
+    name: Schema.Attribute.String & Schema.Attribute.Required;
+    publishedAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiTournamentTournament extends Struct.CollectionTypeSchema {
+  collectionName: 'tournaments';
+  info: {
+    displayName: 'Tournament';
+    pluralName: 'tournaments';
+    singularName: 'tournament';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    date: Schema.Attribute.Date;
+    finished: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
+    games: Schema.Attribute.Relation<'oneToMany', 'api::game.game'>;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::tournament.tournament'
+    > &
+      Schema.Attribute.Private;
+    location: Schema.Attribute.Relation<'oneToOne', 'api::location.location'>;
     name: Schema.Attribute.String & Schema.Attribute.Required;
     publishedAt: Schema.Attribute.DateTime;
     updatedAt: Schema.Attribute.DateTime;
@@ -1613,6 +1649,7 @@ declare module '@strapi/strapi' {
       'api::sponsor.sponsor': ApiSponsorSponsor;
       'api::subscription.subscription': ApiSubscriptionSubscription;
       'api::team.team': ApiTeamTeam;
+      'api::tournament.tournament': ApiTournamentTournament;
       'api::writer.writer': ApiWriterWriter;
       'api::youth.youth': ApiYouthYouth;
       'plugin::content-releases.release': PluginContentReleasesRelease;

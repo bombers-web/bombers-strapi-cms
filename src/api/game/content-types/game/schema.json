@@ -28,9 +28,11 @@
     },
     "division": {
       "type": "enumeration",
+      "required": true,
       "enum": [
         "d1",
-        "d2"
+        "d2",
+        "sevens"
       ]
     },
     "home_score": {
@@ -47,9 +49,6 @@
     "finished": {
       "type": "boolean",
       "default": false
-    },
-    "friendly": {
-      "type": "boolean"
     },
     "image": {
       "type": "media",
@@ -73,8 +72,15 @@
         "championship",
         "playoff",
         "league",
+        "pool",
         "sevens"
       ]
+    },
+    "tournament": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::tournament.tournament",
+      "inversedBy": "games"
     }
   }
 }

@@ -1,0 +1,38 @@
+{
+  "kind": "collectionType",
+  "collectionName": "tournaments",
+  "info": {
+    "singularName": "tournament",
+    "pluralName": "tournaments",
+    "displayName": "Tournament"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "games": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::game.game",
+      "mappedBy": "tournament"
+    },
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "finished": {
+      "type": "boolean",
+      "required": false,
+      "default": false
+    },
+    "location": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::location.location"
+    },
+    "date": {
+      "type": "date"
+    }
+  }
+}

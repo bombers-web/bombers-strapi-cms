@@ -1,0 +1,119 @@
+name: Deploy Strapi to AWS Lightsail
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build Strapi
+        run: npm run build
+        env:
+          NODE_ENV: production
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          ADMIN_JWT_SECRET: ${{ secrets.ADMIN_JWT_SECRET }}
+          APP_KEYS: ${{ secrets.APP_KEYS }}
+          API_TOKEN_SALT: ${{ secrets.API_TOKEN_SALT }}
+          TRANSFER_TOKEN_SALT: ${{ secrets.TRANSFER_TOKEN_SALT }}
+
+      - name: Create deployment package
+        run: |
+          tar -czf deploy.tar.gz \
+            --exclude=node_modules \
+            --exclude=.git \
+            --exclude=.cache \
+            .
+
+      - name: Copy files to Lightsail
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.LIGHTSAIL_HOST }}
+          username: ${{ secrets.LIGHTSAIL_USERNAME }}
+          key: ${{ secrets.LIGHTSAIL_SSH_KEY }}
+          port: 22
+          source: "deploy.tar.gz"
+          target: "/home/ubuntu/"
+
+      - name: Deploy to Lightsail
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.LIGHTSAIL_HOST }}
+          username: ${{ secrets.LIGHTSAIL_USERNAME }}
+          key: ${{ secrets.LIGHTSAIL_SSH_KEY }}
+          port: 22
+          script: |
+            mkdir -p /home/ubuntu/bombers-strapi-cms
+            cd /home/ubuntu/bombers-strapi-cms
+            
+            # Create backup of current version
+            TIMESTAMP=$(date +%Y%m%d_%H%M%S)
+            BACKUP_DIR="/home/ubuntu/backups/strapi-$TIMESTAMP"
+            mkdir -p /home/ubuntu/backups
+            
+            echo "Creating backup at $BACKUP_DIR"
+            mkdir -p $BACKUP_DIR
+            rsync -a --exclude=node_modules /home/ubuntu/bombers-strapi-cms/ $BACKUP_DIR/
+            
+            # Keep only last 5 backups
+            cd /home/ubuntu/backups
+            ls -t | tail -n +6 | xargs -r rm -rf
+            
+            cd /home/ubuntu/bombers-strapi-cms
+            
+            # Extract new files
+            tar -xzf ../deploy.tar.gz
+            rm ../deploy.tar.gz
+            
+            # Helper function to restore backup and reinstall deps
+            rollback() {
+              echo "$1"
+              rsync -a --delete --exclude=node_modules $BACKUP_DIR/ /home/ubuntu/bombers-strapi-cms/
+              npm ci --omit=dev
+              pm2 restart strapi-production
+              exit 1
+            }
+
+            # Install production dependencies only (build was done in CI and included in tar)
+            if ! npm ci --omit=dev; then
+              rollback "npm install failed, rolling back..."
+            fi
+
+            # Restart the application using PM2
+            if ! pm2 restart strapi-production; then
+              pm2 start npm --name "strapi-production" --max-memory-restart 512M -- start
+            fi
+
+            # Health check
+            sleep 30
+            if ! pm2 status strapi-production | grep -q "online"; then
+              rollback "App failed to start, rolling back..."
+            fi
+            
+            echo "Deployment successful!"
+            pm2 save
+
+      - name: Notify deployment status
+        if: always()
+        run: |
+          if [ "${{ job.status }}" == 'success' ]; then
+            echo "Deployment successful!"
+          else
+            echo "Deployment failed!"
+          fi
