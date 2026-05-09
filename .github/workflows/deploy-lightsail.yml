@@ -35,7 +35,7 @@ jobs:
 
       - name: Create deployment package
         run: |
-          tar -czf deploy.tar.gz \
+          tar -czf /tmp/deploy.tar.gz \
             --exclude=node_modules \
             --exclude=.git \
             --exclude=.cache \
@@ -48,7 +48,7 @@ jobs:
           username: ${{ secrets.LIGHTSAIL_USERNAME }}
           key: ${{ secrets.LIGHTSAIL_SSH_KEY }}
           port: 22
-          source: "deploy.tar.gz"
+          source: "/tmp/deploy.tar.gz"
           target: "/home/ubuntu/"
 
       - name: Deploy to Lightsail
@@ -78,8 +78,8 @@ jobs:
             cd /home/ubuntu/bombers-strapi-cms
             
             # Extract new files
-            tar -xzf ../deploy.tar.gz
-            rm ../deploy.tar.gz
+            tar -xzf /home/ubuntu/deploy.tar.gz
+            rm /home/ubuntu/deploy.tar.gz
             
             # Helper function to restore backup and reinstall deps
             rollback() {
