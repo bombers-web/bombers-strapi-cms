@@ -15,6 +15,16 @@ jobs:
 
       - name: Setup Node.js
         uses: actions/setup-node@v5
+Run tar -czf deploy.tar.gz \
+  tar -czf deploy.tar.gz \
+    --exclude=node_modules \
+    --exclude=.git \
+    --exclude=.cache \
+    .
+  shell: /usr/bin/bash -e {0}
+  
+tar: .: file changed as we read it
+Error: Process completed with exit code 1.
         with:
           node-version: '22'
           cache: 'npm'
