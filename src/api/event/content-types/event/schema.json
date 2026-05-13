@@ -41,6 +41,16 @@
         "videos",
         "audios"
       ]
+    },
+    "link": {
+      "type": "string"
+    },
+    "link_text": {
+      "type": "string"
+    },
+    "featured": {
+      "type": "boolean",
+      "default": false
     }
   }
 }

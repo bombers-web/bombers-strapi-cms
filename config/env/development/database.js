@@ -2,12 +2,13 @@ const parse = require("pg-connection-string").parse;
 
 module.exports = ({ env }) => {
   const databaseUrl = env('DEV_DATABASE_URL');
-  const config = parse(databaseUrl);
 
-  if (!config) {
-    console.log('No DATABASE_URL found, using SQLite');
+  if (!databaseUrl) {
+    console.log('No DEV_DATABASE_URL found, using SQLite');
     return getSqliteConfig();
   }
+
+  const config = parse(databaseUrl);
 
   // Use parsed PostgreSQL config
   return {
